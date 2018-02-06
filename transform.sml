@@ -1,10 +1,4 @@
 signature TRANSFORM = sig
-  (*val parseBlock : CST.node -> Document.block_node
-
-  val sectionNodes : Document.inline_node list -> Document.inline_node list
-  val nonSectionNodes : Document.inline_node list -> Document.inline_node list
-  val parseSection : CST.node -> Document.section*)
-
   val parseI : CST.node -> Document.inline_node
 end
 
@@ -19,45 +13,39 @@ structure Transform = struct
 
   (* Transforming block nodes *)
 
-  fun sectionNodes l = List.find isLeft l
+  fun extractTitle ((CST.SList ("title", SOME title, []))::body) = (title, body)
+    | extractTitle _ = raise TransformFailure "Section is missing title"
 
-  fun nonSectionNodes l = List.find isRight l
+  fun sectionNodes (l: (section, block_node) either list)
+    = List.mapPartial (fn x => case x of
+                                   Left s => SOME s
+                                 | Right _ => NONE)
+                                       l
 
-(*
-  fun parseSectionContents l = map parseBlockOrSection l
-  and parseBlockOrSection (CST.SList ("sec", SOME name, body)) = let val = parseSectionContents body
-                                                                 in
+  fun nonSectionNodes (l: (section, block_node) either list)
+    = List.mapPartial (fn x => case x of
+                                   Left _ => NONE
+                                 | Right b => SOME b)
+                                          l
 
-                                                                 end
+  fun parseSection id body =
+    let val (title, body) = extractTitle body
+    in
+        let val body' = parseSectionContents body
+        in
+            let val subsecs = sectionNodes body'
+                and content = nonSectionNodes body'
+            in
+                Section (id, title, content, subsecs)
+            end
+        end
+    end
+  and parseSectionContents l = map parseBlockOrSection l
+  and parseBlockOrSection (CST.SList ("sec", SOME name, body)) = Left (parseSection name body)
     | parseBlockOrSection (CST.SList ("sec", NONE , _))= raise TransformFailure "Section must have a name"
     | parseBlockOrSection (CST.SList (name, arg, body)) = Right (parseB (CST.SList (name, arg, body)))
     | parseBlockOrSection _ = raise TransformFailure "Text and TeX nodes are invalid section content"
   and parseB _ = Paragraph []
-*)
-  (*fun parseBlock _ = Paragraph []
-
-  (* Transforming sections *)
-
-  fun sectionNodes l = List.find (fn n => case n of
-                                              (Section _) => true
-                                            | _ => false)
-                                 l
-
-  fun nonSectionNodes l = List.find (fn n => case n of
-                                              (Section _) => false
-                                            | _ => true)
-                                    l
-
-  fun parseSection (CST.SList ("sec", SOME name, body)) = let val body' = map parseBlock body
-                                                          in
-                                                              let val content = nonSectionNodes body
-                                                                  and subs = sectionNodes body
-                                                              in
-                                                                  raise TransformFailure "Not yet"
-                                                              end
-                                                          end
-    | parseSection (CST.SList ("sec", NONE, body)) = raise TransformFailure "Sections must have names"
-    | parseSection _ = raise TransformFailure "Tried to parse a non-section."*)
 
   (* Transforming inline nodes *)
 
