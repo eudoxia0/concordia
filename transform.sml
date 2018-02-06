@@ -90,14 +90,12 @@ structure Transform = struct
     let val (metadata, body') = extractMetadata body
     in
         let val meta = parseMetadata metadata
+            and children = map parseBlockOrSection body'
         in
-            let val children = map parseBlockOrSection body'
-            in
-                if (nonSectionNodes children) <> nil then
-                    raise TransformFailure "Only sections are allowed as top-level nodes in a document after metadata"
-                else
-                    Document (meta, sectionNodes children)
-            end
+            if (nonSectionNodes children) <> nil then
+                raise TransformFailure "Only sections are allowed as top-level nodes in a document after metadata"
+            else
+                Document (meta, sectionNodes children)
         end
     end
 end
