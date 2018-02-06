@@ -78,4 +78,19 @@ structure Transform = struct
     | parseBlockOrSection _ = raise TransformFailure "Text and TeX nodes are invalid section content"
   and parseB (CST.SList ("p", NONE, body)) = Paragraph (map parseI body)
     | parseB _ = Paragraph nil
+
+  (* Parsing documents *)
+
+  fun extractMetadata ((CST.SList ("metadata", NONE, meta))::body) = (meta, body)
+    | extractMetadata _ = raise TransformFailure "Documents must start with a metadata node"
+
+  fun parseDocument' body =
+    let val (metadata, body') = extractMetadata body
+    in
+        let val meta = Metadata ("Untitled", [])
+        in
+            (* FIXME: ENSURE ALL BODY NODES ARE SECTION NODES *)
+            Document (meta, [])
+        end
+    end
 end
