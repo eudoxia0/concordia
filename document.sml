@@ -1,6 +1,6 @@
 signature DOCUMENT = sig
   datatype block_node = Paragraph of inline_node
-       and section = Section of block_node * section list
+       and section = Section of string * string * block_node * section list
        and inline_node = Whitespace
                        | Text of string
                        | Bold of inline_node list
@@ -18,7 +18,7 @@ end
 
 structure Document : DOCUMENT = struct
   datatype block_node = Paragraph of inline_node
-       and section = Section of block_node * section list
+       and section = Section of string * string * block_node * section list
        and inline_node = Whitespace
                        | Text of string
                        | Bold of inline_node list
