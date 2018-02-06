@@ -46,6 +46,7 @@ structure Transform = struct
   (* Transforming inline nodes *)
 
   fun parseI (CST.Text s) = Text s
+    | parseI (CST.TeX s) = TeX s
 
     | parseI (CST.SList ("b", NONE, body)) = Bold (map parseI body)
     | parseI (CST.SList ("b", SOME _, _)) = raise TransformFailure (noArgument "Bold")
