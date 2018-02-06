@@ -84,10 +84,12 @@ structure Transform = struct
   fun extractMetadata ((CST.SList ("metadata", NONE, meta))::body) = (meta, body)
     | extractMetadata _ = raise TransformFailure "Documents must start with a metadata node"
 
+  fun parseMetadata meta = Metadata ("Untitled", [])
+
   fun parseDocument' body =
     let val (metadata, body') = extractMetadata body
     in
-        let val meta = Metadata ("Untitled", [])
+        let val meta = parseMetadata metadata
         in
             let val children = map parseBlockOrSection body'
             in
