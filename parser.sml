@@ -16,11 +16,8 @@ structure Parser : PARSER = struct
 
   val whitespaceChars = [#" ", #"\n", #"\r"];
 
-  fun member (x, nil) = false
-    | member (x, y::ys) = (x=y) orelse member (x, ys);
-
   fun cleanUp str =
-    if member (String.sub(str, (String.size str) - 1), whitespaceChars) then
+    if Util.member (String.sub(str, (String.size str) - 1), whitespaceChars) then
         Substring.string (Substring.trimr 1 (Substring.full str))
     else
         str

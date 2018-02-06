@@ -6,6 +6,8 @@ signature UTIL = sig
     val isRight : ('a, 'b) either -> bool
 
     val readFileToString : string -> string
+
+    val member : (''a * ''a list) -> bool
 end
 
 structure Util : UTIL = struct
@@ -27,4 +29,7 @@ structure Util : UTIL = struct
       in
           String.concat (loop stream before TextIO.closeIn stream)
       end
+
+    fun member (x, nil) = false
+      | member (x, y::ys) = (x=y) orelse member (x, ys)
 end
