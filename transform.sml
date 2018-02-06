@@ -90,7 +90,13 @@ structure Transform = struct
         let val meta = Metadata ("Untitled", [])
         in
             (* FIXME: ENSURE ALL BODY NODES ARE SECTION NODES *)
-            Document (meta, [])
+            let val children = map parseBlockOrSection body'
+            in
+                if (nonSectionNodes children) <> nil then
+                    raise TransformFailure "Only sections are allowed as top-level nodes in a document after metadata"
+                else
+                    Document (meta, sectionNodes children)
+            end
         end
     end
 end
