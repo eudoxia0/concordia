@@ -8,6 +8,7 @@ signature DOCUMENT = sig
                        | Underline of inline_node list
                        | Superscript of inline_node list
                        | Subscript of inline_node list
+                       | TeX of string
                        | Code of string
                        | WebLink of string * inline_node list
                        | DocumentLink of string * string * inline_node list
@@ -25,6 +26,7 @@ structure Document : DOCUMENT = struct
                        | Underline of inline_node list
                        | Superscript of inline_node list
                        | Subscript of inline_node list
+                       | TeX of string
                        | Code of string
                        | WebLink of string * inline_node list
                        | DocumentLink of string * string * inline_node list
