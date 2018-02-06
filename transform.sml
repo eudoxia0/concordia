@@ -11,42 +11,6 @@ structure Transform = struct
 
   exception TransformFailure of string
 
-  (* Transforming block nodes *)
-
-  fun extractTitle ((CST.SList ("title", SOME title, []))::body) = (title, body)
-    | extractTitle _ = raise TransformFailure "Section is missing title"
-
-  fun sectionNodes (l: (section, block_node) either list)
-    = List.mapPartial (fn x => case x of
-                                   Left s => SOME s
-                                 | Right _ => NONE)
-                                       l
-
-  fun nonSectionNodes (l: (section, block_node) either list)
-    = List.mapPartial (fn x => case x of
-                                   Left _ => NONE
-                                 | Right b => SOME b)
-                                          l
-
-  fun parseSection id body =
-    let val (title, body) = extractTitle body
-    in
-        let val body' = parseSectionContents body
-        in
-            let val subsecs = sectionNodes body'
-                and content = nonSectionNodes body'
-            in
-                Section (id, title, content, subsecs)
-            end
-        end
-    end
-  and parseSectionContents l = map parseBlockOrSection l
-  and parseBlockOrSection (CST.SList ("sec", SOME name, body)) = Left (parseSection name body)
-    | parseBlockOrSection (CST.SList ("sec", NONE , _))= raise TransformFailure "Section must have a name"
-    | parseBlockOrSection (CST.SList (name, arg, body)) = Right (parseB (CST.SList (name, arg, body)))
-    | parseBlockOrSection _ = raise TransformFailure "Text and TeX nodes are invalid section content"
-  and parseB _ = Paragraph []
-
   (* Transforming inline nodes *)
 
   fun parseI (CST.Text s) = Text s
@@ -77,4 +41,41 @@ structure Transform = struct
     | parseI (CST.SList ("n", SOME _, _)) = raise TransformFailure (noArgument "New")
 
     | parseI _ = raise TransformFailure "Not implemented yet"
+
+  (* Transforming block nodes *)
+
+  fun extractTitle ((CST.SList ("title", SOME title, []))::body) = (title, body)
+    | extractTitle _ = raise TransformFailure "Section is missing title"
+
+  fun sectionNodes (l: (section, block_node) either list)
+    = List.mapPartial (fn x => case x of
+                                   Left s => SOME s
+                                 | Right _ => NONE)
+                      l
+
+  fun nonSectionNodes (l: (section, block_node) either list)
+    = List.mapPartial (fn x => case x of
+                                   Left _ => NONE
+                                 | Right b => SOME b)
+                      l
+
+  fun parseSection id body =
+    let val (title, body) = extractTitle body
+    in
+        let val body' = parseSectionContents body
+        in
+            let val subsecs = sectionNodes body'
+                and content = nonSectionNodes body'
+            in
+                Section (id, title, content, subsecs)
+            end
+        end
+    end
+  and parseSectionContents l = map parseBlockOrSection l
+  and parseBlockOrSection (CST.SList ("sec", SOME name, body)) = Left (parseSection name body)
+    | parseBlockOrSection (CST.SList ("sec", NONE , _))= raise TransformFailure "Section must have a name"
+    | parseBlockOrSection (CST.SList (name, arg, body)) = Right (parseB (CST.SList (name, arg, body)))
+    | parseBlockOrSection _ = raise TransformFailure "Text and TeX nodes are invalid section content"
+  and parseB (CST.SList ("p", NONE, body)) = Paragraph (map parseI body)
+    | parseB _ = Paragraph nil
 end
