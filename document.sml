@@ -14,6 +14,12 @@ signature DOCUMENT = sig
                        | DocumentLink of string * string * inline_node list
                        | Foreign of inline_node list
                        | New of inline_node list
+
+  datatype author = Author of string * (string option) * (string option)
+
+  datatype metadata = Metadata of string * author list
+
+  datatype document = Document of metadata * section list
 end
 
 structure Document : DOCUMENT = struct
@@ -32,4 +38,10 @@ structure Document : DOCUMENT = struct
                        | DocumentLink of string * string * inline_node list
                        | Foreign of inline_node list
                        | New of inline_node list
+
+  datatype author = Author of string * (string option) * (string option)
+
+  datatype metadata = Metadata of string * author list
+
+  datatype document = Document of metadata * section list
 end
