@@ -9,6 +9,7 @@ signature TRANSFORM = sig
 end
 
 structure Transform = struct
+  open Util;
   open Document;
   (* Utilities *)
 
@@ -18,6 +19,21 @@ structure Transform = struct
 
   (* Transforming block nodes *)
 
+  fun sectionNodes l = List.find isLeft l
+
+  fun nonSectionNodes l = List.find isRight l
+
+(*
+  fun parseSectionContents l = map parseBlockOrSection l
+  and parseBlockOrSection (CST.SList ("sec", SOME name, body)) = let val = parseSectionContents body
+                                                                 in
+
+                                                                 end
+    | parseBlockOrSection (CST.SList ("sec", NONE , _))= raise TransformFailure "Section must have a name"
+    | parseBlockOrSection (CST.SList (name, arg, body)) = Right (parseB (CST.SList (name, arg, body)))
+    | parseBlockOrSection _ = raise TransformFailure "Text and TeX nodes are invalid section content"
+  and parseB _ = Paragraph []
+*)
   (*fun parseBlock _ = Paragraph []
 
   (* Transforming sections *)
