@@ -31,9 +31,15 @@ structure Parser : PARSER = struct
 
   val ws = many whitespaceParser;
 
+  (* Inline TeX *)
+
+  val texChar = orElse (andThenR (pchar #"\\") (pchar #"$")) (npchar #"$");
+
+  val texParser = pmap String.implode (between (pchar #"$") (many texChar) (pchar #"$"));
+
   (* Text *)
 
-  val textChar = noneOf [startChar, rightDelimiter];
+  val textChar = noneOf [startChar, rightDelimiter, #"$"];
 
   val textParser = pmap String.implode (many1 textChar);
 
@@ -54,7 +60,8 @@ structure Parser : PARSER = struct
   (* Structure *)
 
   fun defineNodeParser listParser =
-    choice [pmap (Text o cleanUp) textParser,
+    choice [pmap TeX texParser,
+            pmap (Text o cleanUp) textParser,
             listParser];
 
   val listParser = (case createWrapperParser () of

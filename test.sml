@@ -27,7 +27,13 @@ val test = suite "Concordia tests" [
                 isParse "\\b{a b c}" (ls [Text "a b c"]),
                 isParse "\\b{a b \\b{c d} e f}" (ls [Text "a b",
                                                      ls [Text "c d"],
-                                                     Text "e f"])
+                                                     Text "e f"]),
+                suite "TeX" [
+                    isParse "$tex$" (TeX "tex"),
+                    isParse "$\\$$" (TeX "$"),
+                    isParse "\\b{text and $tex$ and text}"
+                            (ls [Text "text and", TeX "tex", Text "and text"])
+                ]
             ],
             suite "Inline nodes with argument" [
                 isParse "\\link[text]{test}" (SList ("link", SOME "text", [Text "test"]))
