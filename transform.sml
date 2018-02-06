@@ -89,7 +89,6 @@ structure Transform = struct
     in
         let val meta = Metadata ("Untitled", [])
         in
-            (* FIXME: ENSURE ALL BODY NODES ARE SECTION NODES *)
             let val children = map parseBlockOrSection body'
             in
                 if (nonSectionNodes children) <> nil then
