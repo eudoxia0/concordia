@@ -44,7 +44,7 @@ structure Transform = struct
 
   (* Transforming block nodes *)
 
-  fun extractTitle ((CST.SList ("title", SOME title, []))::body) = (title, body)
+  fun extractTitle ((CST.SList ("title", NONE, title))::body) = (title, body)
     | extractTitle _ = raise TransformFailure "Section is missing title"
 
   fun sectionNodes (l: (section, block_node) either list)
@@ -67,7 +67,7 @@ structure Transform = struct
             let val subsecs = sectionNodes body'
                 and content = nonSectionNodes body'
             in
-                Section (id, title, content, subsecs)
+                Section (id, map parseI title, content, subsecs)
             end
         end
     end
