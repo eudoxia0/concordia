@@ -14,5 +14,6 @@ structure HtmlBackend : HTML_BACKEND = struct
     | htmlInline (Superscript l) = Node ("sup", [], map htmlInline l)
     | htmlInline (Subscript l) = Node ("sub", [], map htmlInline l)
     | htmlInline (TeX s) = Node ("span", [Attr ("class", "inline-tex")], [String s])
+    | htmlInline (Code s) = Node ("code", [], [String s])
     | htmlInline _ = String "NOT IMPLEMENTED YET"
 end
