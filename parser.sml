@@ -66,7 +66,8 @@ structure Parser : PARSER = struct
                         let val listParser = pmap (fn (tag, (arg, body)) => SList (tag, arg, body))
                                                   (andThen tagParser (andThen (opt argument)
                                                                               (between (pchar leftDelimiter)
-                                                                                       (many (andThenL nodeParser (ws)))
+                                                                                       (andThenR (ws)
+                                                                                                 (many (andThenL nodeParser (ws))))
                                                                                        (pchar rightDelimiter))))
 
                         in
