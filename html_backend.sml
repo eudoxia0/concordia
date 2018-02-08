@@ -24,6 +24,9 @@ structure HtmlBackend : HTML_BACKEND = struct
   and wrap l = (String " ") :: l @ [String " "]
 
   fun htmlBlock (Paragraph l) = Node ("p", [], map htmlInline l)
+    | htmlBlock (List l) = Node ("ul", [], map listItem l)
+    | htmlBlock (Enumeration l) = Node ("ol", [], map listItem l)
+  and listItem (ListItem l) = Node ("li", [], map htmlBlock l)
 
   fun heading depth = if depth < 7 then
                           ("h" ^ (Int.toString depth))
