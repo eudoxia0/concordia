@@ -16,3 +16,6 @@ test: $(SRC) test.sml
 
 $(BIN): $(SRC) concordia.sml $(MLB)
 	$(MLTON) $(MLB)
+
+clean:
+	rm $(BIN)
