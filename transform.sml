@@ -77,9 +77,13 @@ structure Transform = struct
     | parseBlockOrSection (CST.SList (name, arg, body)) = Right (parseB (CST.SList (name, arg, body)))
     | parseBlockOrSection _ = raise TransformFailure "Text and TeX nodes are invalid section content"
   and parseB (CST.SList ("p", NONE, body)) = Paragraph (map parseI body)
+    | parseB (CST.SList ("li", NONE, l)) = List (map parseListItem l)
+    | parseB (CST.SList ("ol", NONE, l)) = Enumeration (map parseListItem l)
     | parseB (CST.SList ("image", SOME uri, [])) = Image uri
     | parseB (CST.SList ("image", _, _)) = raise TransformFailure "Bad image definition"
     | parseB _ = Paragraph nil
+  and parseListItem (CST.SList ("it", NONE, l)) = ListItem (map parseB l)
+    | parseListItem _ = raise TransformFailure "Bad list item definition"
 
   (* Parsing documents *)
 
