@@ -49,7 +49,7 @@ structure Parser : PARSER = struct
 
   (* Tag argument *)
 
-  val argumentChar = anyOfString "abcdefghijklmnoprstuvwxyzABCDEFGHIJKLMNOPRSTUVWXYZ-0123456789,"
+  val argumentChar = noneOf [#"]"]
 
   val argument = andThenR (pchar #"[") (andThenL (pmap String.implode (many1 argumentChar))
                                                  (pchar #"]"))
