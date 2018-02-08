@@ -1,0 +1,13 @@
+$(SML_LIB)/basis/basis.mlb
+
+../prover/prover.sml
+../parcom/parcom.sml
+
+util.sml
+document.sml
+cst.sml
+parser.sml
+transform.sml
+html_gen.sml
+html_backend.sml
+concordia.sml
