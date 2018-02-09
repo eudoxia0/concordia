@@ -21,12 +21,14 @@ structure HtmlBackend : HTML_BACKEND = struct
     | htmlInline (New l) = Node ("span", [Attr ("class", "new-word")], wrap (map htmlInline l))
     | htmlInline _ = String "NOT IMPLEMENTED YET"
   and n name body = Node (name, [], wrap (map htmlInline body))
-  and wrap l = (String " ") :: l @ [String " "]
+  and wrap l = l
 
   fun htmlBlock (Paragraph l) = Node ("p", [], map htmlInline l)
     | htmlBlock (List l) = Node ("ul", [], map listItem l)
     | htmlBlock (Enumeration l) = Node ("ol", [], map listItem l)
     | htmlBlock (Image uri) = Node ("img", [Attr ("src", uri)], [])
+    | htmlBlock (Definition (id, l)) = Node ("div", [Attr ("class", "definition")],
+                                             (String "Definition: ") :: (map htmlBlock l))
   and listItem (ListItem l) = Node ("li", [], map htmlBlock l)
 
   fun heading depth = if depth < 7 then
@@ -52,9 +54,9 @@ structure HtmlBackend : HTML_BACKEND = struct
 
   fun htmlMeta meta = [
       Node ("meta", [Attr ("charset", "UTF-8")], []),
-      Node ("script", [Attr ("src", "https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.js")], []),
+      Node ("script", [Attr ("src", "assets/katex/katex.js")], []),
       String "<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.css'>",
-      Node ("style", [], [String ".inline-tex { padding: 0 5px; }"])
+      String "<link rel='stylesheet' href='assets/style.css'>"
   ]
 
   fun htmlDocument (Document (meta, secs)) =

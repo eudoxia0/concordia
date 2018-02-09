@@ -44,6 +44,11 @@ structure Transform = struct
 
   (* Transforming block nodes *)
 
+  fun nonTextNodes l = List.mapPartial (fn x => case x of
+                                                    (CST.Text s) => NONE
+                                                  | a => SOME a)
+                                       l
+
   fun extractTitle ((CST.SList ("title", NONE, title))::body) = (title, body)
     | extractTitle _ = raise TransformFailure "Section is missing title"
 
@@ -60,7 +65,7 @@ structure Transform = struct
                       l
 
   fun parseSection id body =
-    let val (title, body) = extractTitle body
+    let val (title, body) = extractTitle (nonTextNodes body)
     in
         let val body' = parseSectionContents body
         in
@@ -71,18 +76,26 @@ structure Transform = struct
             end
         end
     end
-  and parseSectionContents l = map parseBlockOrSection l
+  and parseSectionContents l = map parseBlockOrSection (nonTextNodes l)
   and parseBlockOrSection (CST.SList ("sec", SOME name, body)) = Left (parseSection name body)
     | parseBlockOrSection (CST.SList ("sec", NONE , _))= raise TransformFailure "Section must have a name"
     | parseBlockOrSection (CST.SList (name, arg, body)) = Right (parseB (CST.SList (name, arg, body)))
     | parseBlockOrSection _ = raise TransformFailure "Text and TeX nodes are invalid section content"
   and parseB (CST.SList ("p", NONE, body)) = Paragraph (map parseI body)
-    | parseB (CST.SList ("li", NONE, l)) = List (map parseListItem l)
-    | parseB (CST.SList ("ol", NONE, l)) = Enumeration (map parseListItem l)
+
+    | parseB (CST.SList ("li", NONE, l)) = List (map parseListItem (nonTextNodes l))
+
+    | parseB (CST.SList ("ol", NONE, l)) = Enumeration (map parseListItem (nonTextNodes l))
+
     | parseB (CST.SList ("image", SOME uri, [])) = Image uri
     | parseB (CST.SList ("image", _, _)) = raise TransformFailure "Bad image definition"
-    | parseB _ = Paragraph nil
-  and parseListItem (CST.SList ("it", NONE, l)) = ListItem (map parseB l)
+
+    | parseB (CST.SList ("definition", SOME id, l)) = Definition (id, map parseB (nonTextNodes l))
+    | parseB (CST.SList ("definition", NONE, l)) = raise TransformFailure "Definitions must have an ID"
+
+    | parseB (CST.SList (n, _, _)) = raise TransformFailure (n ^ ": Not implemented yet")
+    | parseB _ = raise TransformFailure "Bad text or tex node"
+  and parseListItem (CST.SList ("it", NONE, l)) = ListItem (map parseB (nonTextNodes l))
     | parseListItem _ = raise TransformFailure "Bad list item definition"
 
   (* Parsing documents *)
@@ -93,7 +106,7 @@ structure Transform = struct
   fun parseMetadata meta = Metadata ("Untitled", [])
 
   fun parseDocument' body =
-    let val (metadata, body') = extractMetadata body
+    let val (metadata, body') = extractMetadata (nonTextNodes body)
     in
         let val meta = parseMetadata metadata
             and children = map parseBlockOrSection body'

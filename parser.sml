@@ -16,11 +16,7 @@ structure Parser : PARSER = struct
 
   val whitespaceChars = [#" ", #"\n", #"\r"];
 
-  fun cleanUp str =
-    if Util.member (String.sub(str, (String.size str) - 1), whitespaceChars) then
-        Substring.string (Substring.trimr 1 (Substring.full str))
-    else
-        str
+  fun cleanUp str = str
 
   (* Utility parsers *)
 
@@ -66,8 +62,7 @@ structure Parser : PARSER = struct
                         let val listParser = pmap (fn (tag, (arg, body)) => SList (tag, arg, body))
                                                   (andThen tagParser (andThen (opt argument)
                                                                               (between (pchar leftDelimiter)
-                                                                                       (andThenR (ws)
-                                                                                                 (many (andThenL nodeParser (ws))))
+                                                                                       (many nodeParser)
                                                                                        (pchar rightDelimiter))))
 
                         in
