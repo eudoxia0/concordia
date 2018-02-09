@@ -11,7 +11,7 @@ BIN := concordia
 compile: $(SRC)
 	$(SML) $(SMLFLAGS) $(DEPS) $(SRC)
 
-test: $(SRC) test.sml
+test: $(SRC) test.sml concordia.sml
 	$(SML) $(SMLFLAGS) $(DEPS) $(SRC) test.sml
 
 $(BIN): $(SRC) concordia.sml $(MLB)
