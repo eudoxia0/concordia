@@ -23,16 +23,16 @@ val test = suite "Concordia tests" [
                 isParse "\\b{\\b{\\b{}}}" (ls [ls [ls nil]]),
                 isParse "\\b{\\b{\\b{\\b{}}}}" (ls [ls [ls [ls nil]]]),
                 isParse "\\b{\\b{a}}" (ls [ls [Text "a"]]),
-                isParse "\\b{\\b{a} \\b{}}" (ls [ls [Text "a"], ls nil]),
+                isParse "\\b{\\b{a} \\b{}}" (ls [ls [Text "a"], Text " ", ls nil]),
                 isParse "\\b{a b c}" (ls [Text "a b c"]),
-                isParse "\\b{a b \\b{c d} e f}" (ls [Text "a b",
+                isParse "\\b{a b \\b{c d} e f}" (ls [Text "a b ",
                                                      ls [Text "c d"],
-                                                     Text "e f"]),
+                                                     Text " e f"]),
                 suite "TeX" [
                     isParse "$tex$" (TeX "tex"),
                     isParse "$\\$$" (TeX "$"),
                     isParse "\\b{text and $tex$ and text}"
-                            (ls [Text "text and", TeX "tex", Text "and text"])
+                            (ls [Text "text and ", TeX "tex", Text " and text"])
                 ]
             ],
             suite "Inline nodes with argument" [
