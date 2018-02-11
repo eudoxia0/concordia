@@ -2,7 +2,7 @@ fun fileToHTML input output =
   let val file = Util.readFileToString input
   in
       case (Parser.parseString file) of
-          (CST.Result (CST.SList ("document", NONE, l))) =>
+          (Util.Result (CST.SList ("document", NONE, l))) =>
           let val doc = Transform.parseDocument' l
           in
               let val html = HtmlBackend.htmlDocument doc
@@ -10,7 +10,8 @@ fun fileToHTML input output =
                   Util.writeStringToFile output (HtmlGen.generate html)
               end
           end
-        | _ => print "Bad parse"
+        | (Util.Failure msg) => print msg
+        | _ => print "Unknown failure"
   end
 
 fun main () =

@@ -1,5 +1,5 @@
 signature PARSER = sig
-  val parseString : string -> CST.result
+  val parseString : string -> CST.node Util.result
 end
 
 structure Parser : PARSER = struct
@@ -76,6 +76,6 @@ structure Parser : PARSER = struct
 
   fun parseString str =
     case (run sexpParser str) of
-        (Success (node, _)) => Result node
-     | _ => Fail "Bad parse"
+        (Success (node, _)) => Util.Result node
+      | (Failure msg) => Util.Failure ("Bad parse: " ^ msg)
 end
