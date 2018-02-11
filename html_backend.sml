@@ -36,17 +36,17 @@ structure HtmlBackend : HTML_BACKEND = struct
   and cls n = Attr ("class", n)
   and id' s = Attr ("id", s)
   and metaTheorem class id s p = let val s = map htmlBlock s
-                                  and p = map htmlBlock p
-                              in
-                                  let val sh = admTitle "Statement:"
-                                      and ph = admTitle "Proof:"
-                                  in
-                                      Node ("div", [id' id, cls ("admonition " ^ class)], [
-                                                Node ("div", [cls "statement"], sh :: s),
-                                                Node ("div", [cls "proof"], ph :: p)
-                                           ])
-                                  end
-                              end
+                                     and p = map htmlBlock p
+                                 in
+                                     let val sh = admTitle "Statement:"
+                                         and ph = admTitle "Proof:"
+                                     in
+                                         Node ("div", [id' id, cls ("admonition " ^ class)], [
+                                                   Node ("div", [cls "statement"], sh :: s),
+                                                   Node ("div", [cls "proof"], ph :: p)
+                                              ])
+                                     end
+                                 end
 
   fun heading depth = if depth < 7 then
                           ("h" ^ (Int.toString depth))
@@ -72,13 +72,6 @@ structure HtmlBackend : HTML_BACKEND = struct
 
   (* Template *)
 
-  val jsCode = "var nodes = document.getElementsByClassName('inline-tex');" ^
-               "for (var i = 0; i < nodes.length; i++) {" ^
-               "    var node = nodes[i];" ^
-               "    var text = node.textContent;" ^
-               "    katex.render(text, nodes[i]);" ^
-               "}"
-
   fun htmlMeta meta = [
       Node ("meta", [Attr ("charset", "UTF-8")], []),
       Node ("script", [Attr ("src", "assets/katex/katex.min.js")], []),
@@ -88,9 +81,9 @@ structure HtmlBackend : HTML_BACKEND = struct
 
   fun htmlDocument doc = htmlDocument' (tableOfContents doc) doc
   and htmlDocument' toc (Document (meta, secs)) =
-    let val toc = Node ("ol", [], map htmlToc toc)
+    let val toc = Node ("ol", [Attr ("class", "toc")], map htmlToc toc)
         and sections = map (fn s => htmlSection s 1) secs
-        and js = [Node ("script", [Attr ("class", "toc")], [String jsCode])]
+        and js = [Node ("script", [Attr ("src", "assets/scripst.js")], [])]
     in
         Node ("html", [], [
                   Node ("head", [], htmlMeta meta),
