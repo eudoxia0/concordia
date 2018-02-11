@@ -29,20 +29,21 @@ structure HtmlBackend : HTML_BACKEND = struct
     | htmlBlock (Image uri) = Node ("img", [Attr ("src", uri)], [])
     | htmlBlock (Definition (id, l)) = Node ("div", [Attr ("class", "admonition definition")],
                                              (admTitle "Definition: ") :: (map htmlBlock l))
-    | htmlBlock (Theorem (s, p)) = metaTheorem "theorem" s p
-    | htmlBlock (Lemma (s, p)) = metaTheorem "lemma" s p
+    | htmlBlock (Theorem (id, s, p)) = metaTheorem "theorem" id s p
+    | htmlBlock (Lemma (id, s, p)) = metaTheorem "lemma" id s p
   and listItem (ListItem l) = Node ("li", [], map htmlBlock l)
-  and admTitle s = Node ("span", cls "admonition-title", [String s])
-  and cls n = [Attr ("class", n)]
-  and metaTheorem class s p = let val s = map htmlBlock s
+  and admTitle s = Node ("span", [cls "admonition-title"], [String s])
+  and cls n = Attr ("class", n)
+  and id' s = Attr ("id", s)
+  and metaTheorem class id s p = let val s = map htmlBlock s
                                   and p = map htmlBlock p
                               in
                                   let val sh = admTitle "Statement:"
                                       and ph = admTitle "Proof:"
                                   in
-                                      Node ("div", cls ("admonition " ^ class), [
-                                                Node ("div", cls "statement", sh :: s),
-                                                Node ("div", cls "proof", ph :: p)
+                                      Node ("div", [id' id, cls ("admonition " ^ class)], [
+                                                Node ("div", [cls "statement"], sh :: s),
+                                                Node ("div", [cls "proof"], ph :: p)
                                            ])
                                   end
                               end

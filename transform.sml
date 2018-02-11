@@ -93,10 +93,26 @@ structure Transform = struct
     | parseB (CST.SList ("definition", SOME id, l)) = Definition (id, map parseB (nonTextNodes l))
     | parseB (CST.SList ("definition", NONE, l)) = raise TransformFailure "Definitions must have an ID"
 
+    | parseB (CST.SList ("theorem", SOME id, l)) = let val (s, p) = parseTheorem l
+                                                in
+                                                    Theorem (id, s, p)
+                                                end
+    | parseB (CST.SList ("theorem", NONE, l)) = raise TransformFailure "Theorems must have an ID"
+
+    | parseB (CST.SList ("lemma", SOME id, l)) = let val (s, p) = parseTheorem l
+                                              in
+                                                  Lemma (id, s, p)
+                                              end
+    | parseB (CST.SList ("lemma", NONE, l)) = raise TransformFailure "Lemmas must have an ID"
+
     | parseB (CST.SList (n, _, _)) = raise TransformFailure (n ^ ": Not implemented yet")
     | parseB _ = raise TransformFailure "Bad text or tex node"
   and parseListItem (CST.SList ("it", NONE, l)) = ListItem (map parseB (nonTextNodes l))
     | parseListItem _ = raise TransformFailure "Bad list item definition"
+  and parseTheorem l = case (nonTextNodes l) of
+                           [CST.SList ("statement", NONE, s),
+                            CST.SList ("proof", NONE, p)] => (map parseB s, map parseB p)
+                         | _ => raise TransformFailure "Bad theorem or lemma"
 
   (* Parsing documents *)
 
