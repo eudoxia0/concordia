@@ -25,6 +25,12 @@ signature DOCUMENT = sig
   datatype metadata = Metadata of string * author list
 
   datatype document = Document of metadata * section list
+
+  (* Table of contents *)
+
+  datatype toc = Toc of string * (inline_node list) * (toc list)
+
+  val tableOfContents : document -> (toc list)
 end
 
 structure Document : DOCUMENT = struct
@@ -54,4 +60,11 @@ structure Document : DOCUMENT = struct
   datatype metadata = Metadata of string * author list
 
   datatype document = Document of metadata * section list
+
+  (* Table of contents *)
+
+  datatype toc = Toc of string * (inline_node list) * (toc list)
+
+  fun tableOfContents (Document (_, s)) = map toc s
+  and toc (Section (id, title, _, secs)) = Toc (id, title, map toc secs)
 end

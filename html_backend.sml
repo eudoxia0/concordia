@@ -45,24 +45,39 @@ structure HtmlBackend : HTML_BACKEND = struct
               title :: content @ subsecs
           end)
 
+  (* Table of contents *)
+
+  fun htmlToc (Toc (id, title, tocs)) =
+    Node ("li", [], [
+              Node ("a", [Attr ("href", "#" ^ id)], (map htmlInline title)),
+              Node ("ol", [], map htmlToc tocs)
+         ])
+
+  (* Template *)
+
   val jsCode = "var nodes = document.getElementsByClassName('inline-tex');" ^
                "for (var i = 0; i < nodes.length; i++) {" ^
                "    var node = nodes[i];" ^
-               "    var text = node.innerHTML;" ^
+               "    var text = node.textContent;" ^
                "    katex.render(text, nodes[i]);" ^
                "}"
 
   fun htmlMeta meta = [
       Node ("meta", [Attr ("charset", "UTF-8")], []),
-      Node ("script", [Attr ("src", "assets/katex/katex.js")], []),
-      String "<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-beta1/katex.min.css'>",
+      Node ("script", [Attr ("src", "assets/katex/katex.min.js")], []),
+      String "<link rel='stylesheet' href='assets/katex/katex.min.css'>",
       String "<link rel='stylesheet' href='assets/style.css'>"
   ]
 
-  fun htmlDocument (Document (meta, secs)) =
-    Node ("html", [], [
-              Node ("head", [], htmlMeta meta),
-              Node ("body", [], (map (fn s => htmlSection s 1) secs) @
-                                [Node ("script", [], [String jsCode])])
-          ])
+  fun htmlDocument doc = htmlDocument' (tableOfContents doc) doc
+  and htmlDocument' toc (Document (meta, secs)) =
+    let val toc = Node ("ol", [], map htmlToc toc)
+        and sections = map (fn s => htmlSection s 1) secs
+        and js = [Node ("script", [Attr ("class", "toc")], [String jsCode])]
+    in
+        Node ("html", [], [
+                  Node ("head", [], htmlMeta meta),
+                  Node ("body", [], toc :: sections @ js)
+             ])
+    end
 end
