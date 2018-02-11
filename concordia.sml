@@ -3,13 +3,12 @@ fun fileToHTML input output =
   in
       case (Parser.parseString file) of
           (Util.Result (CST.SList ("document", NONE, l))) =>
-          let val doc = Transform.parseDocument' l
-          in
-              let val html = HtmlBackend.htmlDocument doc
-              in
-                  Util.writeStringToFile output (HtmlGen.generate html)
-              end
-          end
+          (case (Transform.parseDocument l) of
+               (Util.Result doc) => let val html = HtmlBackend.htmlDocument doc
+                                    in
+                                        Util.writeStringToFile output (HtmlGen.generate html)
+                                    end
+             | (Util.Failure msg) => print msg)
         | (Util.Failure msg) => print msg
         | _ => print "Unknown failure"
   end

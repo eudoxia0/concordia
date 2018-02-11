@@ -122,7 +122,9 @@ structure Transform = struct
 
   fun parseMetadata meta = Metadata ("Untitled", [])
 
-  fun parseDocument' body =
+  fun parseDocument body = (Util.Result (parseDocument' body))
+                           handle (TransformFailure msg) => (Util.Failure msg)
+  and parseDocument' body =
     let val (metadata, body') = extractMetadata (nonTextNodes body)
     in
         let val meta = parseMetadata metadata
