@@ -4,6 +4,8 @@ signature DOCUMENT = sig
                       | Enumeration of list_item list
                       | Image of string
                       | Definition of string * block_node list
+                      | Theorem of block_node list * block_node list
+                      | Lemma of block_node list * block_node list
        and list_item = ListItem of block_node list
        and section = Section of string * inline_node list * block_node list * section list
        and inline_node = Whitespace
@@ -39,6 +41,8 @@ structure Document : DOCUMENT = struct
                       | Enumeration of list_item list
                       | Image of string
                       | Definition of string * block_node list
+                      | Theorem of block_node list * block_node list
+                      | Lemma of block_node list * block_node list
        and list_item = ListItem of block_node list
        and section = Section of string * inline_node list * block_node list * section list
        and inline_node = Whitespace
