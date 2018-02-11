@@ -2,6 +2,9 @@ signature UTIL = sig
     datatype ('a, 'b) either = Left of 'a
                              | Right of 'b
 
+    datatype 'a result = Result of 'a
+                       | Failure of string
+
     val isLeft : ('a, 'b) either -> bool
     val isRight : ('a, 'b) either -> bool
 
@@ -9,11 +12,16 @@ signature UTIL = sig
     val writeStringToFile : string -> string -> unit
 
     val member : (''a * ''a list) -> bool
+
+    val afterPrefix : string -> string -> string option
 end
 
 structure Util : UTIL = struct
     datatype ('a, 'b) either = Left of 'a
                              | Right of 'b
+
+    datatype 'a result = Result of 'a
+                       | Failure of string
 
     fun isLeft (Left _) = true
       | isLeft _ = false
@@ -40,4 +48,10 @@ structure Util : UTIL = struct
 
     fun member (x, nil) = false
       | member (x, y::ys) = (x=y) orelse member (x, ys)
+
+    fun afterPrefix str prefix =
+      if (String.isPrefix prefix str) then
+          SOME (String.extract (str, (String.size prefix), NONE))
+      else
+          NONE
 end
