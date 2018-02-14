@@ -1,7 +1,7 @@
 signature HTML_BACKEND = sig
   val htmlInline : Document.inline_node -> HtmlGen.node
   val htmlBlock : Document.block_node -> HtmlGen.node
-  val htmlDocument : Document.document -> HtmlGen.node
+  val htmlDocument : Document.document -> string list -> string list -> HtmlGen.node
 end
 
 structure HtmlBackend : HTML_BACKEND = struct
@@ -15,7 +15,7 @@ structure HtmlBackend : HTML_BACKEND = struct
     | htmlInline (Underline l) = Node ("span", [Attr ("class", "underline")], wrap (map htmlInline l))
     | htmlInline (Superscript l) = n "sup" l
     | htmlInline (Subscript l) = n "sub" l
-    | htmlInline (TeX s) = Node ("span", [Attr ("class", "inline-tex")], wrap [String s])
+    | htmlInline (TeX s) = Node ("span", [Attr ("class", "inline-tex")], wrap [String ("$" ^ s ^ "$")])
     | htmlInline (Code s) = Node ("code", [], [String s])
     | htmlInline (Foreign l) = Node ("span", [Attr ("class", "foreign-text")], wrap (map htmlInline l))
     | htmlInline (New l) = Node ("span", [Attr ("class", "new-word")], wrap (map htmlInline l))
@@ -72,21 +72,20 @@ structure HtmlBackend : HTML_BACKEND = struct
 
   (* Template *)
 
-  fun htmlMeta meta = [
-      Node ("meta", [Attr ("charset", "UTF-8")], []),
-      Node ("script", [Attr ("src", "assets/katex/katex.min.js")], []),
-      String "<link rel='stylesheet' href='assets/katex/katex.min.css'>",
-      String "<link rel='stylesheet' href='assets/style.css'>"
-  ]
+  fun htmlMeta meta cssFiles = let val node = (Node ("meta", [Attr ("charset", "UTF-8")], []))
+                               in
+                                   node :: (map (fn s => String ("<link rel='stylesheet' href='" ^ s ^ "'>"))
+                                                cssFiles)
+                               end
 
-  fun htmlDocument doc = htmlDocument' (tableOfContents doc) doc
-  and htmlDocument' toc (Document (meta, secs)) =
+  fun htmlDocument doc cssFiles jsFiles = htmlDocument' doc (tableOfContents doc) cssFiles jsFiles
+  and htmlDocument' (Document (meta, secs)) toc cssFiles jsFiles =
     let val toc = Node ("ol", [Attr ("class", "toc")], map htmlToc toc)
         and sections = map (fn s => htmlSection s 1) secs
-        and js = [Node ("script", [Attr ("src", "assets/scripst.js")], [])]
+        and js = map (fn s => Node ("script", [Attr ("src", s)], [])) jsFiles
     in
         Node ("html", [], [
-                  Node ("head", [], htmlMeta meta),
+                  Node ("head", [], htmlMeta meta cssFiles),
                   Node ("body", [], toc :: sections @ js)
              ])
     end
