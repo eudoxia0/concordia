@@ -17,6 +17,9 @@ structure HtmlBackend : HTML_BACKEND = struct
     | htmlInline (Subscript l) = n "sub" l
     | htmlInline (TeX s) = Node ("span", [Attr ("class", "inline-tex")], wrap [String ("$" ^ s ^ "$")])
     | htmlInline (Code s) = Node ("code", [], [String s])
+    | htmlInline (InternalLink (id, l)) = Node ("a",
+                                                [Attr ("href", "#" ^ id)],
+                                                map htmlInline l)
     | htmlInline (Foreign l) = Node ("span", [Attr ("class", "foreign-text")], wrap (map htmlInline l))
     | htmlInline (New l) = Node ("span", [Attr ("class", "new-word")], wrap (map htmlInline l))
     | htmlInline _ = String "NOT IMPLEMENTED YET"

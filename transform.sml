@@ -34,6 +34,9 @@ structure Transform = struct
     | parseI (CST.SList ("c", NONE, body)) = Code ""
     | parseI (CST.SList ("c", SOME _, _)) = raise TransformFailure (noArgument "Code")
 
+    | parseI (CST.SList ("ref", NONE, _)) = raise TransformFailure "Missing ID in ref"
+    | parseI (CST.SList ("ref", SOME id, body)) = InternalLink (id, map parseI body)
+
     | parseI (CST.SList ("f", NONE, body)) = Foreign (map parseI body)
     | parseI (CST.SList ("f", SOME _, _)) = raise TransformFailure (noArgument "Foreign")
 

@@ -18,7 +18,7 @@ signature DOCUMENT = sig
                        | TeX of string
                        | Code of string
                        | WebLink of string * inline_node list
-                       | DocumentLink of string * string * inline_node list
+                       | InternalLink of string * inline_node list
                        | Foreign of inline_node list
                        | New of inline_node list
 
@@ -55,7 +55,7 @@ structure Document : DOCUMENT = struct
                        | TeX of string
                        | Code of string
                        | WebLink of string * inline_node list
-                       | DocumentLink of string * string * inline_node list
+                       | InternalLink of string * inline_node list
                        | Foreign of inline_node list
                        | New of inline_node list
 
