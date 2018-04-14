@@ -1,0 +1,29 @@
+Group
+is
+  $LIBS_PATH/pcom/pcom.cm
+
+  src/util.sig
+  src/util.sml
+
+  src/document.sig
+  src/document.sml
+
+  src/toc.sig
+  src/toc.sml
+
+  src/cst.sig
+  src/cst.sml
+
+  src/parser.sig
+  src/parser.sml
+
+  src/transform.sig
+  src/transform.sml
+
+  src/html_gen.sig
+  src/html_gen.sml
+
+  src/html_backend.sig
+  src/html_backend.sml
+
+  $/basis.cm
