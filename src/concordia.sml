@@ -1,3 +1,5 @@
+open Util
+
 fun println str = print (str ^ "\n")
 
 fun getArgs prefix l = List.mapPartial (fn s => Util.afterPrefix s prefix) l
@@ -8,15 +10,13 @@ fun fileToHTML input output args =
       and jsFiles = getArgs "--js=" args
   in
       case (Parser.parseString file) of
-          (Util.Result (CST.SList ("document", NONE, l))) =>
-          (case (Transform.parseDocument l) of
-               (Util.Result doc) => let val html = HtmlBackend.htmlDocument doc cssFiles jsFiles
-                                    in
-                                        Util.writeStringToFile output (HtmlGen.generate html)
-                                    end
-             | (Util.Failure msg) => println msg)
+          (Util.Result node) => (case Transform.parseDocument node of
+                                     (Result doc) => let val html = HtmlBackend.htmlDocument doc cssFiles jsFiles
+                                                     in
+                                                         writeStringToFile output (HtmlGen.generate html)
+                                                     end
+                                   | (Failure msg) => println msg)
         | (Util.Failure msg) => println msg
-        | _ => println "Unknown failure"
   end
 
 fun main () =

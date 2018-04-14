@@ -1,9 +1,5 @@
-signature PARSER = sig
-  val parseString : string -> CST.node Util.result
-end
-
 structure Parser : PARSER = struct
-  open ParCom
+  open PCom
   open CST
 
   (* Constants *)

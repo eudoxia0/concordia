@@ -1,12 +1,6 @@
-signature HTML_BACKEND = sig
-  val htmlInline : Document.inline_node -> HtmlGen.node
-  val htmlBlock : Document.block_node -> HtmlGen.node
-  val htmlDocument : Document.document -> string list -> string list -> HtmlGen.node
-end
-
 structure HtmlBackend : HTML_BACKEND = struct
-  open Document;
-  open HtmlGen;
+  open Document
+  open HtmlGen
 
   fun htmlInline (Whitespace) = String " "
     | htmlInline (Text s) = String s
@@ -29,12 +23,16 @@ structure HtmlBackend : HTML_BACKEND = struct
   fun htmlBlock (Paragraph l) = Node ("p", [], map htmlInline l)
     | htmlBlock (List l) = Node ("ul", [], map listItem l)
     | htmlBlock (Enumeration l) = Node ("ol", [], map listItem l)
+    | htmlBlock (DefList l) = Node ("dl", [], List.foldr (op @) [] (map defBody l))
     | htmlBlock (Image uri) = Node ("img", [Attr ("src", uri)], [])
     | htmlBlock (Definition (id, l)) = Node ("div", [Attr ("class", "admonition definition")],
                                              (admTitle "Definition: ") :: (map htmlBlock l))
     | htmlBlock (Theorem (id, s, p)) = metaTheorem "theorem" id s p
     | htmlBlock (Lemma (id, s, p)) = metaTheorem "lemma" id s p
   and listItem (ListItem l) = Node ("li", [], map htmlBlock l)
+  and defBody (Def (t, d)) = [termBody t, defBody' d]
+  and termBody l = Node ("dt", [], map htmlInline l)
+  and defBody' l = Node ("dd", [], map htmlBlock l)
   and admTitle s = Node ("span", [cls "admonition-title"], [String s])
   and cls n = Attr ("class", n)
   and id' s = Attr ("id", s)
@@ -75,21 +73,36 @@ structure HtmlBackend : HTML_BACKEND = struct
 
   (* Template *)
 
-  fun htmlMeta meta cssFiles = let val node = (Node ("meta", [Attr ("charset", "UTF-8")], []))
-                               in
-                                   node :: (map (fn s => String ("<link rel='stylesheet' href='" ^ s ^ "'>"))
-                                                cssFiles)
-                               end
+  fun htmlMeta (Metadata (title, authors)) cssFiles =
+    let val title = Node ("title", [], [String title])
+        and charset = (Node ("meta", [Attr ("charset", "UTF-8")], []))
+        and css = map (fn s => String ("<link rel='stylesheet' href='" ^ s ^ "'>"))
+                      cssFiles
+    in
+        title :: charset :: css
+    end
+
+  fun htmlHeader title = Node ("header", [], [
+                                   Node ("h1",
+                                         [Attr ("class", "title")],
+                                         [String title])
+                               ])
+
+  fun htmlBody (Metadata (title, _)) secs toc =
+    let val header = htmlHeader title
+        val toc = Node ("ol", [Attr ("class", "toc")], map htmlToc toc)
+        and sections = map (fn s => htmlSection s 1) secs
+    in
+        header :: toc :: sections
+    end
 
   fun htmlDocument doc cssFiles jsFiles = htmlDocument' doc (tableOfContents doc) cssFiles jsFiles
   and htmlDocument' (Document (meta, secs)) toc cssFiles jsFiles =
-    let val toc = Node ("ol", [Attr ("class", "toc")], map htmlToc toc)
-        and sections = map (fn s => htmlSection s 1) secs
-        and js = map (fn s => Node ("script", [Attr ("src", s)], [])) jsFiles
+    let val js = map (fn s => Node ("script", [Attr ("src", s)], [])) jsFiles
     in
         Node ("html", [], [
                   Node ("head", [], htmlMeta meta cssFiles),
-                  Node ("body", [], toc :: sections @ js)
+                  Node ("body", [], (htmlBody meta secs toc) @ js)
              ])
     end
 end

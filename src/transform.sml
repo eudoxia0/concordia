@@ -1,10 +1,7 @@
-signature TRANSFORM = sig
-  val parseI : CST.node -> Document.inline_node
-end
-
 structure Transform = struct
-  open Util;
-  open Document;
+  open Util
+  open Document
+
   (* Utilities *)
 
   fun noArgument name = "'" ^ name ^ "' nodes don't take arguments."
@@ -90,6 +87,8 @@ structure Transform = struct
 
     | parseB (CST.SList ("ol", NONE, l)) = Enumeration (map parseListItem (nonTextNodes l))
 
+    | parseB (CST.SList ("dl", NONE, l)) = DefList (parseDefListItems (nonTextNodes l))
+
     | parseB (CST.SList ("image", SOME uri, [])) = Image uri
     | parseB (CST.SList ("image", _, _)) = raise TransformFailure "Bad image definition"
 
@@ -112,6 +111,10 @@ structure Transform = struct
     | parseB _ = raise TransformFailure "Bad text or tex node"
   and parseListItem (CST.SList ("it", NONE, l)) = ListItem (map parseB (nonTextNodes l))
     | parseListItem _ = raise TransformFailure "Bad list item definition"
+  and parseDefListItems ((CST.SList ("term", NONE, t))::(CST.SList ("def", NONE, d))::rest) =
+      (Def (map parseI t, map parseB (nonTextNodes d))) :: (parseDefListItems rest)
+    | parseDefListItems nil = nil
+    | parseDefListItems _ = raise TransformFailure "Error when parsing definition list"
   and parseTheorem l = case (nonTextNodes l) of
                            [CST.SList ("statement", NONE, s),
                             CST.SList ("proof", NONE, p)] => (map parseB (nonTextNodes s),
@@ -123,14 +126,18 @@ structure Transform = struct
   fun extractMetadata ((CST.SList ("metadata", NONE, meta))::body) = (meta, body)
     | extractMetadata _ = raise TransformFailure "Documents must start with a metadata node"
 
-  fun parseMetadata meta = Metadata ("Untitled", [])
+  fun parseMetadata title meta = Metadata (title, [])
 
-  fun parseDocument body = (Util.Result (parseDocument' body))
+  fun parseDocument node = (Util.Result (parseDocument' node))
                            handle (TransformFailure msg) => (Util.Failure msg)
-  and parseDocument' body =
+  and parseDocument' node = case node of
+                                (CST.SList ("document", SOME title, body)) => parseDocument'' title body
+                              | (CST.SList ("document", NONE, body)) => raise TransformFailure "Missing document title"
+                              | _ => raise TransformFailure "Invalid document form"
+  and parseDocument'' title body =
     let val (metadata, body') = extractMetadata (nonTextNodes body)
     in
-        let val meta = parseMetadata metadata
+        let val meta = parseMetadata title metadata
             and children = map parseBlockOrSection body'
         in
             if (nonSectionNodes children) <> nil then
