@@ -92,6 +92,9 @@ structure Transform = struct
     | parseB (CST.SList ("image", SOME uri, [])) = Image uri
     | parseB (CST.SList ("image", _, _)) = raise TransformFailure "Bad image definition"
 
+    | parseB (CST.SList ("code", NONE, [CST.Text s])) = CodeBlock s
+    | parseB (CST.SList ("code", _, _)) = raise TransformFailure "Bad code block"
+
     | parseB (CST.SList ("definition", SOME id, l)) = Definition (id, map parseB (nonTextNodes l))
     | parseB (CST.SList ("definition", NONE, l)) = raise TransformFailure "Definitions must have an ID"
 

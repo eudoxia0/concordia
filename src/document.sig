@@ -4,6 +4,7 @@ signature DOCUMENT = sig
                       | Enumeration of list_item list
                       | DefList of definition list
                       | Image of string
+                      | CodeBlock of string
                       | Definition of string * block_node list
                       | Theorem of string * block_node list * block_node list
                       | Lemma of string * block_node list * block_node list
