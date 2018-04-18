@@ -27,6 +27,7 @@ structure HtmlBackend : HTML_BACKEND = struct
     | htmlBlock (Image uri) = Node ("img", [Attr ("src", uri)], [])
     | htmlBlock (CodeBlock s) = Node ("pre", [], [Node ("code", [], [String s])])
     | htmlBlock (Quote l) = Node ("blockquote", [], map htmlBlock l)
+    | htmlBlock (TexBlock s) = Node ("div", [Attr ("class", "block-tex")], [String ("\\[" ^ s ^ "\\]")])
     | htmlBlock (Definition (id, l)) = Node ("div", [Attr ("class", "admonition definition")],
                                              (admTitle "Definition: ") :: (map htmlBlock l))
     | htmlBlock (Theorem (id, s, p)) = metaTheorem "theorem" id s p

@@ -6,6 +6,7 @@ signature DOCUMENT = sig
                       | Image of string
                       | CodeBlock of string
                       | Quote of block_node list
+                      | TexBlock of string
                       | Definition of string * block_node list
                       | Theorem of string * block_node list * block_node list
                       | Lemma of string * block_node list * block_node list
