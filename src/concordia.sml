@@ -10,7 +10,7 @@ fun fileToHTML input output args =
       and jsFiles = getArgs "--js=" args
   in
       case (Parser.parseString file) of
-          (Util.Result node) => (case Transform.parseDocument node of
+          (Util.Result node) => (case Transform.parseDocument (CST.processIncludes node) of
                                      (Result doc) => let val html = HtmlBackend.htmlDocument doc cssFiles jsFiles
                                                      in
                                                          writeStringToFile output (HtmlGen.generate html)
