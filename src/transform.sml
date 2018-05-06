@@ -49,6 +49,11 @@ structure Transform = struct
                                                   | a => SOME a)
                                        l
 
+  fun mergeTextNodes l = String.concat (List.mapPartial (fn x => case x of
+                                                                     (CST.Text s) => SOME s
+                                                                   | _ => NONE)
+                                                        l)
+
   fun extractTitle ((CST.SList ("title", NONE, title))::body) = (title, body)
     | extractTitle _ = raise TransformFailure "Section is missing title"
 
@@ -92,7 +97,7 @@ structure Transform = struct
     | parseB (CST.SList ("image", SOME uri, [])) = Image uri
     | parseB (CST.SList ("image", _, _)) = raise TransformFailure "Bad image definition"
 
-    | parseB (CST.SList ("code", NONE, [CST.Text s])) = CodeBlock s
+    | parseB (CST.SList ("code", NONE, l)) = CodeBlock (mergeTextNodes l)
     | parseB (CST.SList ("code", _, _)) = raise TransformFailure "Bad code block"
 
     | parseB (CST.SList ("quote", NONE, l)) = Quote (map parseB (nonTextNodes l))
