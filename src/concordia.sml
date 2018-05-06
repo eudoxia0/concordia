@@ -19,6 +19,19 @@ fun fileToHTML input output args =
         | (Util.Failure msg) => println msg
   end
 
+fun fileToTeX input output =
+  let val file = Util.readFileToString input
+  in
+      case (Parser.parseString file) of
+          (Util.Result node) => (case Transform.parseDocument (CST.processIncludes node) of
+                                     (Result doc) => let val tex = TexBackend.texDocument doc
+                                                     in
+                                                         writeStringToFile output tex
+                                                     end
+                                   | (Failure msg) => println msg)
+        | (Util.Failure msg) => println msg
+  end
+
 fun main () =
   let val args = CommandLine.arguments()
   in
@@ -26,6 +39,9 @@ fun main () =
           "html"::rest => (case rest of
                                input::output::args => fileToHTML input output args
                              | _ => println "Usage: html <input> <output>")
+        | "tex"::rest => (case rest of
+                              input::output::_ => fileToTeX input output
+                            | _ => println "Usage: tex <input> <output>") =>
        | _ => println "Unknown command"
   end
 

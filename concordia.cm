@@ -26,4 +26,7 @@ is
   src/html_backend.sig
   src/html_backend.sml
 
+  src/tex_backend.sig
+  src/tex_backend.sml
+
   $/basis.cm
