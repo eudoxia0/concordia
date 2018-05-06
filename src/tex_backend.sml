@@ -35,7 +35,12 @@ structure TexBackend :> TEX_BACKEND = struct
                                                       defs))
                                 ^ "\\end{description}"
     | texBlock (Image path) = "\\includegraphics{" ^ path ^ "}"
-    | texBlock _ = raise Fail "Not implemented"
+    | texBlock (CodeBlock s) = s
+    | texBlock (Quote l) = "\\begin{quotation}" ^ (concBlock l) ^ "\\end{quotation}"
+    | texBlock (TexBlock s) = "\\[" ^ s ^ "\\]"
+    | texBlock (Definition (id, l)) = concBlock l
+    | texBlock (Theorem (id, s, p)) = concBlock s
+    | texBlock (Lemma (id, s, p)) = concBlock s
   and concBlock l = String.concat (map texBlock l)
 
   fun sectionTag 1 = "\\part"
@@ -58,7 +63,8 @@ structure TexBackend :> TEX_BACKEND = struct
     ^ "\n\n\\title{" ^ title ^ "}\n"
     ^ "\\date{\\today}\n\n"
     ^ "\\begin{document}\n"
-    ^ "\\maketitle"
+    ^ "\\maketitle\n"
+    ^ "\\tableofcontents\n\n"
 
   val texSuffix =
       "\\end{document}"
