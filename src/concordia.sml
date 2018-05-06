@@ -41,8 +41,8 @@ fun main () =
                              | _ => println "Usage: html <input> <output>")
         | "tex"::rest => (case rest of
                               input::output::_ => fileToTeX input output
-                            | _ => println "Usage: tex <input> <output>") =>
-       | _ => println "Unknown command"
+                            | _ => println "Usage: tex <input> <output>")
+        | _ => println "Unknown command"
   end
 
 val _ = main ();
