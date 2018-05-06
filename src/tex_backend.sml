@@ -1,8 +1,13 @@
 structure TexBackend :> TEX_BACKEND = struct
   open Document
 
+  fun escapeText s = String.translate (fn c => mapChar c) s
+  and mapChar #"%" = "\\%"
+    | mapChar #"&" = "\\&"
+    | mapChar c = str c
+
   fun texInline Whitespace = ""
-    | texInline (Text s) = s (* FIXME: escape for latex *)
+    | texInline (Text s) = escapeText s
     | texInline (Bold l) = "\\textbf{" ^ (concInline l) ^ "}"
     | texInline (Italics l) = "\\textit{" ^ (concInline l) ^ "}"
     | texInline (Underline l) = "\\underline{" ^ (concInline l) ^ "}"
