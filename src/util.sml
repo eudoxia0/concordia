@@ -33,7 +33,7 @@ structure Util : UTIL = struct
     and stringLines s = String.fields (fn c => c = #"\n") s
     and afterLine ls i = List.drop (ls, i - 1)
     and beforeLine ls i = List.take (ls, i - 1)
-    and lineRange ls s e = beforeLine (afterLine ls s) (e - s + 1)
+    and lineRange ls s e = beforeLine (afterLine ls s) (e - s + 2)
     and linesString ls = String.concatWith "\n" ls
 
     fun member (x, nil) = false
