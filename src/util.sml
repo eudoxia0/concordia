@@ -30,7 +30,7 @@ structure Util : UTIL = struct
 
     fun readFileLines filepath (s, e) =
       String.concatWith "\n" (beforeLine (afterLine (stringLines (readFileToString filepath)) s) e)
-    and stringLines s = String.tokens (fn c => c = #"\n") s
+    and stringLines s = String.fields (fn c => c = #"\n") s
     and afterLine ls i = List.drop (ls, i - 1)
     and beforeLine ls i = List.take (ls, i - 1)
 
