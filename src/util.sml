@@ -29,11 +29,12 @@ structure Util : UTIL = struct
       end
 
     fun readFileLines filepath (s, e) =
-      String.concatWith "\n" (lineRange (stringLines (readFileToString filepath)) s e)
+      linesString (lineRange (stringLines (readFileToString filepath)) s e)
     and stringLines s = String.fields (fn c => c = #"\n") s
     and afterLine ls i = List.drop (ls, i - 1)
     and beforeLine ls i = List.take (ls, i - 1)
     and lineRange ls s e = beforeLine (afterLine ls s) (e - s + 1)
+    and linesString ls = String.concatWith "\n" ls
 
     fun member (x, nil) = false
       | member (x, y::ys) = (x=y) orelse member (x, ys)
