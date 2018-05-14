@@ -12,8 +12,6 @@ structure Parser : PARSER = struct
 
   val whitespaceChars = [#" ", #"\n", #"\r"];
 
-  fun cleanUp str = str
-
   (* Utility parsers *)
 
   val whitespaceParser = anyOf whitespaceChars;
@@ -50,7 +48,7 @@ structure Parser : PARSER = struct
 
   fun defineNodeParser listParser =
     choice [pmap TeX texParser,
-            pmap (Text o cleanUp) textParser,
+            pmap Text textParser,
             listParser];
 
   val listParser = (case createWrapperParser () of
