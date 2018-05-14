@@ -16,28 +16,29 @@ fun parseFile path =
       (Util.Result node) => node
     | (Util.Failure msg) => die msg
 
+fun parseDocument path =
+  case Transform.parseDocument (CST.processIncludes (parseFile path)) of
+      (Result doc) => doc
+    | (Failure msg) => die msg
+
 fun fileToHTML input output args =
-  let val node = parseFile input
+  let val doc = parseDocument input
       and cssFiles = getArgs "--css=" args
       and jsFiles = getArgs "--js=" args
   in
-      case Transform.parseDocument (CST.processIncludes node) of
-          (Result doc) => let val html = HtmlBackend.htmlDocument doc cssFiles jsFiles
-                          in
-                              writeStringToFile output (HtmlGen.generate html)
-                          end
-        | (Failure msg) => println msg
+      let val html = HtmlBackend.htmlDocument doc cssFiles jsFiles
+      in
+          writeStringToFile output (HtmlGen.generate html)
+      end
   end
 
 fun fileToTeX input output =
-  let val node = parseFile input
+  let val doc = parseDocument input
   in
-      case Transform.parseDocument (CST.processIncludes node) of
-          (Result doc) => let val tex = TexBackend.texDocument doc
-                          in
-                              writeStringToFile output tex
-                          end
-        | (Failure msg) => println msg
+      let val tex = TexBackend.texDocument doc
+      in
+          writeStringToFile output tex
+      end
   end
 
 fun main () =
