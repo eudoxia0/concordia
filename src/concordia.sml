@@ -2,34 +2,42 @@ open Util
 
 fun println str = print (str ^ "\n")
 
+fun die str =
+  let
+  in
+      println str;
+      OS.Process.terminate OS.Process.failure
+  end
+
 fun getArgs prefix l = List.mapPartial (fn s => Util.afterPrefix s prefix) l
 
+fun parseFile path =
+  case (Parser.parseString (Util.readFileToString path)) of
+      (Util.Result node) => node
+    | (Util.Failure msg) => die msg
+
 fun fileToHTML input output args =
-  let val file = Util.readFileToString input
+  let val node = parseFile input
       and cssFiles = getArgs "--css=" args
       and jsFiles = getArgs "--js=" args
   in
-      case (Parser.parseString file) of
-          (Util.Result node) => (case Transform.parseDocument (CST.processIncludes node) of
-                                     (Result doc) => let val html = HtmlBackend.htmlDocument doc cssFiles jsFiles
-                                                     in
-                                                         writeStringToFile output (HtmlGen.generate html)
-                                                     end
-                                   | (Failure msg) => println msg)
-        | (Util.Failure msg) => println msg
+      case Transform.parseDocument (CST.processIncludes node) of
+          (Result doc) => let val html = HtmlBackend.htmlDocument doc cssFiles jsFiles
+                          in
+                              writeStringToFile output (HtmlGen.generate html)
+                          end
+        | (Failure msg) => println msg
   end
 
 fun fileToTeX input output =
-  let val file = Util.readFileToString input
+  let val node = parseFile input
   in
-      case (Parser.parseString file) of
-          (Util.Result node) => (case Transform.parseDocument (CST.processIncludes node) of
-                                     (Result doc) => let val tex = TexBackend.texDocument doc
-                                                     in
-                                                         writeStringToFile output tex
-                                                     end
-                                   | (Failure msg) => println msg)
-        | (Util.Failure msg) => println msg
+      case Transform.parseDocument (CST.processIncludes node) of
+          (Result doc) => let val tex = TexBackend.texDocument doc
+                          in
+                              writeStringToFile output tex
+                          end
+        | (Failure msg) => println msg
   end
 
 fun main () =
