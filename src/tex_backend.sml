@@ -25,18 +25,18 @@ structure TexBackend :> TEX_BACKEND = struct
     | texBlock (List its) = "\\begin{itemize}\n"
                             ^ (String.concat (map (fn (ListItem l) => "\\item " ^ (concBlock l) ^ "\n\n")
                                                   its))
-                            ^ "\\end{itemize}"
+                            ^ "\\end{itemize}\n\n"
     | texBlock (Enumeration its) = "\\begin{enum}\n"
                                    ^ (String.concat (map (fn (ListItem l) => "\\item " ^ (concBlock l) ^ "\n\n")
                                                          its))
-                                   ^ "\\end{enum}"
+                                   ^ "\\end{enum}\n\n"
     | texBlock (DefList defs) = "\\begin{description}\n"
                                 ^ (String.concat (map (fn (Def (t, d)) => "\\item [" ^ (concInline t) ^ "] " ^ (concBlock d) ^ "\n\n")
                                                       defs))
-                                ^ "\\end{description}"
-    | texBlock (Image path) = "\\includegraphics{" ^ path ^ "}"
-    | texBlock (CodeBlock s) = s
-    | texBlock (Quote l) = "\\begin{quotation}" ^ (concBlock l) ^ "\\end{quotation}"
+                                ^ "\\end{description}\n\n"
+    | texBlock (Image path) = "\\includegraphics{" ^ path ^ "}\n\n"
+    | texBlock (CodeBlock s) = "\\begin{verbatim}" ^ s ^ "\\end{verbatim}\n\n"
+    | texBlock (Quote l) = "\\begin{quotation}" ^ (concBlock l) ^ "\\end{quotation}\n\n"
     | texBlock (TexBlock s) = "\\[" ^ s ^ "\\]"
     | texBlock (Definition (id, l)) = concBlock l
     | texBlock (Theorem (id, s, p)) = concBlock s
@@ -60,6 +60,7 @@ structure TexBackend :> TEX_BACKEND = struct
     "\\documentclass{report}\n"
     ^ "\\usepackage[utf8]{inputenc}"
     ^ "\\usepackage{graphicx}"
+    ^ "\\usepackage{listings}"
     ^ "\n\n\\title{" ^ title ^ "}\n"
     ^ "\\date{\\today}\n\n"
     ^ "\\begin{document}\n"
