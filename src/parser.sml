@@ -1,6 +1,8 @@
 structure Parser : PARSER = struct
-  open PCom
   open CST
+
+  structure ps = Parsimony(ParsimonyStringInput)
+  open ps
 
   (* Constants *)
 
@@ -20,7 +22,7 @@ structure Parser : PARSER = struct
 
   (* Inline TeX *)
 
-  val texChar = orElse (andThenR (pchar #"\\") (pchar #"$")) (npchar #"$");
+  val texChar = or (seqR (pchar #"\\") (pchar #"$")) (noneOf [#"$"]);
 
   val texParser = pmap String.implode (between (pchar #"$") (many texChar) (pchar #"$"));
 
@@ -34,15 +36,15 @@ structure Parser : PARSER = struct
 
   val tagChar = anyOfString "abcdefghijklmnopqrstuvwxyz-0123456789";
 
-  val tagParser = andThenR (pchar startChar)
-                           (pmap String.implode (many1 tagChar))
+  val tagParser = seqR (pchar startChar)
+                       (pmap String.implode (many1 tagChar))
 
   (* Tag argument *)
 
   val argumentChar = noneOf [#"]"]
 
-  val argument = andThenR (pchar #"[") (andThenL (pmap String.implode (many1 argumentChar))
-                                                 (pchar #"]"))
+  val argument = seqR (pchar #"[") (seqL (pmap String.implode (many1 argumentChar))
+                                         (pchar #"]"))
 
   (* Structure *)
 
@@ -51,13 +53,13 @@ structure Parser : PARSER = struct
             pmap Text textParser,
             listParser];
 
-  val listParser = (case createWrapperParser () of
+  val listParser = (case wrapper () of
                         (nodeParser: node parser, nodeParserRef: node parser ref) =>
                         let val listParser = pmap (fn (tag, (arg, body)) => SList (tag, arg, body))
-                                                  (andThen tagParser (andThen (opt argument)
-                                                                              (between (pchar leftDelimiter)
-                                                                                       (many nodeParser)
-                                                                                       (pchar rightDelimiter))))
+                                                  (seq tagParser (seq (opt argument)
+                                                                      (between (pchar leftDelimiter)
+                                                                               (many nodeParser)
+                                                                               (pchar rightDelimiter))))
 
                         in
                             nodeParserRef := defineNodeParser listParser;
@@ -69,7 +71,7 @@ structure Parser : PARSER = struct
   (* Functions *)
 
   fun parseString str =
-    case (run sexpParser str) of
+    case (run sexpParser (ParsimonyStringInput.fromString str)) of
         (Success (node, _)) => Util.Result node
-      | (Failure msg) => Util.Failure ("Bad parse: " ^ msg)
+      | (Failure f) => Util.Failure (explain (Failure f))
 end
