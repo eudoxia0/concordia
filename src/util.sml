@@ -28,9 +28,11 @@ structure Util : UTIL = struct
           TextIO.closeOut stream
       end
 
-    fun readFileLines filepath (s, e) =
-      linesString (lineRange (stringLines (readFileToString filepath)) s e)
-    and stringLines s = String.fields (fn c => c = #"\n") s
+    fun readFileLines filepath =
+      String.fields (fn c => c = #"\n") (readFileToString filepath)
+
+    fun readFileRange filepath (s, e) =
+      linesString (lineRange (readFileLines filepath) s e)
     and afterLine ls i = List.drop (ls, i - 1)
     and beforeLine ls i = List.take (ls, i - 1)
     and lineRange ls s e = beforeLine (afterLine ls s) (e - s + 2)

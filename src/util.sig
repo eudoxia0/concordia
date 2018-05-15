@@ -11,7 +11,8 @@ signature UTIL = sig
     val readFileToString : string -> string
     val writeStringToFile : string -> string -> unit
 
-    val readFileLines : string -> (int * int) -> string
+    val readFileLines : string -> string list
+    val readFileRange : string -> (int * int) -> string
 
     val member : (''a * ''a list) -> bool
 
