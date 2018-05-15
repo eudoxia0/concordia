@@ -13,7 +13,7 @@ structure CST : CST = struct
             [path, s, e] => let val s' = forceInt s
                                 and e' = forceInt e
                             in
-                                Text (Util.readFileLines path (s', e'))
+                                Text (Util.readFileRange path (s', e'))
                             end
           | _ => raise Fail "Bad \\include"
     end
