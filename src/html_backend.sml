@@ -99,13 +99,14 @@ structure HtmlBackend : HTML_BACKEND = struct
         header :: toc :: sections
     end
 
-  fun htmlDocument doc cssFiles jsFiles = htmlDocument' doc (tableOfContents doc) cssFiles jsFiles
-  and htmlDocument' (Document (meta, secs)) toc cssFiles jsFiles =
+  fun htmlDocument doc cssFiles jsFiles macros = htmlDocument' doc (tableOfContents doc) cssFiles jsFiles macros
+  and htmlDocument' (Document (meta, secs)) toc cssFiles jsFiles macros =
     let val js = map (fn s => Node ("script", [Attr ("src", s)], [])) jsFiles
+        and mathjax = Node ("script", [], [String (TexMacros.mathJaxConfig macros)])
     in
         Node ("html", [], [
                   Node ("head", [], htmlMeta meta cssFiles),
-                  Node ("body", [], (htmlBody meta secs toc) @ js)
+                  Node ("body", [], (htmlBody meta secs toc) @ js @ [mathjax])
              ])
     end
 end

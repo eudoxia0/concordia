@@ -11,6 +11,11 @@ fun die str =
 
 fun getArgs prefix l = List.mapPartial (fn s => Util.afterPrefix s prefix) l
 
+fun getArg prefix l =
+  case (getArgs prefix l) of
+      (first::rest) => SOME first
+    | _ => NONE
+
 fun parseFile path =
   case (Parser.parseString (Util.readFileToString path)) of
       (Util.Result node) => node
@@ -25,10 +30,16 @@ fun fileToHTML input output args =
   let val doc = parseDocument input
       and cssFiles = getArgs "--css=" args
       and jsFiles = getArgs "--js=" args
+      and texMacros = getArg "--macros=" args
   in
-      let val html = HtmlBackend.htmlDocument doc cssFiles jsFiles
+      let val texmacs = (case texMacros of
+                             SOME path => TexMacros.parseMacroFile path
+                           | _ => [])
       in
-          writeStringToFile output (HtmlGen.generate html)
+          let val html = HtmlBackend.htmlDocument doc cssFiles jsFiles texmacs
+          in
+              writeStringToFile output (HtmlGen.generate html)
+      end
       end
   end
 
