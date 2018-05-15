@@ -1,9 +1,12 @@
 Group
 is
-  $LIBS_PATH/pcom/pcom.cm
+  vendor/parsimony/parsimony.cm
 
   src/util.sig
   src/util.sml
+
+  src/tex_macros.sig
+  src/tex_macros.sml
 
   src/document.sig
   src/document.sml

@@ -1,8 +1,11 @@
 $(SML_LIB)/basis/basis.mlb
-$(LIBS_PATH)/pcom/pcom.mlb
+vendor/parsimony/parsimony.mlb
 
 src/util.sig
 src/util.sml
+
+src/tex_macros.sig
+src/tex_macros.sml
 
 src/document.sig
 src/document.sml
