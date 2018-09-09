@@ -45,9 +45,10 @@ fun fileToHTML input output args =
 
 fun fileToTeX input output args =
   let val doc = parseDocument input
-      and docclass = getArg "--documentclass=" args
+      and docclass = getArg "--tex-document-class=" args
+      and docoptions = getArg "--tex-document-options" args
   in
-      let val tex = TexBackend.texDocument doc docclass
+      let val tex = TexBackend.texDocument doc docclass docoptions
       in
           writeStringToFile output tex
       end
