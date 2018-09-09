@@ -43,9 +43,9 @@ fun fileToHTML input output args =
       end
   end
 
-fun fileToTeX input output =
+fun fileToTeX input output args =
   let val doc = parseDocument input
-      and docclass = getArg "--documentclass="
+      and docclass = getArg "--documentclass=" args
   in
       let val tex = TexBackend.texDocument doc docclass
       in
@@ -61,7 +61,7 @@ fun main () =
                                input::output::args => fileToHTML input output args
                              | _ => println "Usage: html <input> <output>")
         | "tex"::rest => (case rest of
-                              input::output::_ => fileToTeX input output
+                              input::output::args => fileToTeX input output args
                             | _ => println "Usage: tex <input> <output>")
         | _ => println "Unknown command"
   end
