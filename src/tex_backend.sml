@@ -1,6 +1,8 @@
 structure TexBackend :> TEX_BACKEND = struct
   open Document
 
+  type document_class = string option
+
   fun escapeText s = String.translate (fn c => mapChar c) s
   and mapChar #"%" = "\\%"
     | mapChar #"&" = "\\&"
@@ -56,8 +58,8 @@ structure TexBackend :> TEX_BACKEND = struct
     ^ (concBlock contents)
     ^ (String.concat (map (fn s => texSection s (depth+1)) subsecs))
 
-  fun texPrefix (Metadata (title, _)) =
-    "\\documentclass{report}\n"
+  fun texPrefix (Metadata (title, _)) docclass =
+    "\\documentclass{" ^ docclass ^ "}\n"
     ^ "\\usepackage[utf8]{inputenc}"
     ^ "\\usepackage{graphicx}"
     ^ "\\usepackage{listings}"
@@ -70,6 +72,12 @@ structure TexBackend :> TEX_BACKEND = struct
   val texSuffix =
       "\\end{document}"
 
-  fun texDocument (Document (meta, sections)) =
-    (texPrefix meta) ^ (String.concat (map (fn s => texSection s 1) sections)) ^ "\n" ^ texSuffix
+  fun texDocument (Document (meta, sections)) docclass =
+      let val docclass' = Option.getOpt (docclass, "report")
+      in
+          (texPrefix meta docclass')
+          ^ (String.concat (map (fn s => texSection s 1) sections))
+          ^ "\n"
+          ^ texSuffix
+      end
 end

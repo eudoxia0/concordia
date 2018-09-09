@@ -47,7 +47,7 @@ fun fileToTeX input output =
   let val doc = parseDocument input
       and docclass = getArg "--documentclass="
   in
-      let val tex = TexBackend.texDocument doc
+      let val tex = TexBackend.texDocument doc docclass
       in
           writeStringToFile output tex
       end
