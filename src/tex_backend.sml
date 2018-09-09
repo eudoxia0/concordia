@@ -68,6 +68,7 @@ structure TexBackend :> TEX_BACKEND = struct
     ^ "\\usepackage[utf8]{inputenc}\n"
     ^ "\\usepackage{graphicx}\n"
     ^ "\\usepackage{listings}\n"
+    ^ "\\usepackage{fontspec}\n"
     ^ (case font of
            SOME f => "\\setmainfont{" ^ f ^ "}\n"
          | NONE => "")
