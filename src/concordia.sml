@@ -51,8 +51,9 @@ fun fileToTeX input output args =
   let val doc = parseDocument input
       and docclass = getArg "tex-document-class" args
       and docoptions = getArg "tex-document-options" args
+      and mainFont = getArg "tex-main-font" args
   in
-      let val tex = TexBackend.texDocument doc docclass docoptions
+      let val tex = TexBackend.texDocument doc docclass docoptions mainFont
       in
           writeStringToFile output tex
       end

@@ -2,8 +2,8 @@ structure TexBackend :> TEX_BACKEND = struct
   open Document
 
   type document_class = string option
-
   type document_options = string option
+  type main_font = string option
 
   fun escapeText s = String.translate (fn c => mapChar c) s
   and mapChar #"%" = "\\%"
@@ -63,11 +63,14 @@ structure TexBackend :> TEX_BACKEND = struct
   fun texDocOptions (SOME s) = "[" ^ s ^ "]"
     | texDocOptions NONE = ""
 
-  fun texPrefix (Metadata (title, _)) docclass docoptions =
+  fun texPrefix (Metadata (title, _)) docclass docoptions font =
     "\\documentclass" ^ (texDocOptions docoptions) ^ "{" ^ docclass ^ "}\n"
-    ^ "\\usepackage[utf8]{inputenc}"
-    ^ "\\usepackage{graphicx}"
-    ^ "\\usepackage{listings}"
+    ^ "\\usepackage[utf8]{inputenc}\n"
+    ^ "\\usepackage{graphicx}\n"
+    ^ "\\usepackage{listings}\n"
+    ^ (case font of
+           SOME f => "\\setmainfont{" ^ f ^ "}\n"
+         | NONE => "")
     ^ "\n\n\\title{" ^ title ^ "}\n"
     ^ "\\date{\\today}\n\n"
     ^ "\\begin{document}\n"
@@ -77,10 +80,10 @@ structure TexBackend :> TEX_BACKEND = struct
   val texSuffix =
       "\\end{document}"
 
-  fun texDocument (Document (meta, sections)) docclass docoptions =
+  fun texDocument (Document (meta, sections)) docclass docoptions mainFont =
       let val docclass' = Option.getOpt (docclass, "report")
       in
-          (texPrefix meta docclass' docoptions)
+          (texPrefix meta docclass' docoptions mainFont)
           ^ (String.concat (map (fn s => texSection s 1) sections))
           ^ "\n"
           ^ texSuffix
