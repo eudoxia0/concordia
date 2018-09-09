@@ -9,7 +9,11 @@ fun die str =
       OS.Process.terminate OS.Process.failure
   end
 
-fun getArgs prefix l = List.mapPartial (fn s => Util.afterPrefix s prefix) l
+fun getArgs prefix l =
+    let val prefix' = "--" ^ prefix ^ "="
+    in
+        List.mapPartial (fn s => Util.afterPrefix s prefix') l
+    end
 
 fun getArg prefix l =
   case (getArgs prefix l) of
@@ -28,9 +32,9 @@ fun parseDocument path =
 
 fun fileToHTML input output args =
   let val doc = parseDocument input
-      and cssFiles = getArgs "--css=" args
-      and jsFiles = getArgs "--js=" args
-      and texMacros = getArg "--macros=" args
+      and cssFiles = getArgs "css" args
+      and jsFiles = getArgs "js" args
+      and texMacros = getArg "macros" args
   in
       let val texmacs = (case texMacros of
                              SOME path => TexMacros.parseMacroFile path
@@ -45,8 +49,8 @@ fun fileToHTML input output args =
 
 fun fileToTeX input output args =
   let val doc = parseDocument input
-      and docclass = getArg "--tex-document-class=" args
-      and docoptions = getArg "--tex-document-options" args
+      and docclass = getArg "tex-document-class" args
+      and docoptions = getArg "tex-document-options" args
   in
       let val tex = TexBackend.texDocument doc docclass docoptions
       in
