@@ -8,6 +8,7 @@ structure TexBackend :> TEX_BACKEND = struct
   fun escapeText s = String.translate (fn c => mapChar c) s
   and mapChar #"%" = "\\%"
     | mapChar #"&" = "\\&"
+    | mapChar #"^" = "\\^"
     | mapChar c = str c
 
   fun texInline Whitespace = ""
