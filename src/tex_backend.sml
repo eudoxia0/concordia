@@ -9,6 +9,7 @@ structure TexBackend :> TEX_BACKEND = struct
   and mapChar #"%" = "\\%"
     | mapChar #"&" = "\\&"
     | mapChar #"^" = "\\^"
+    | mapChar #"#" = "\\#"
     | mapChar c = str c
 
   fun texInline Whitespace = ""
