@@ -16,5 +16,7 @@ signature UTIL = sig
 
     val member : (''a * ''a list) -> bool
 
+    (* If the second string is a prefix of the first string, return the first
+       string with the prefix removed *)
     val afterPrefix : string -> string -> string option
 end
