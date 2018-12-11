@@ -10,8 +10,11 @@ signature DOCUMENT = sig
                       | Definition of string * block_node list
                       | Theorem of string * block_node list * block_node list
                       | Lemma of string * block_node list * block_node list
+
        and list_item = ListItem of block_node list
+
        and section = Section of string * inline_node list * block_node list * section list
+
        and inline_node = Whitespace
                        | Text of string
                        | Bold of inline_node list
@@ -25,6 +28,7 @@ signature DOCUMENT = sig
                        | InternalLink of string * inline_node list
                        | Foreign of inline_node list
                        | New of inline_node list
+
        and definition = Def of inline_node list * block_node list
 
   datatype author = Author of string * (string option) * (string option)
