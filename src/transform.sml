@@ -160,20 +160,23 @@ structure Transform = struct
               (NONE, nodes)
 
       in
-          let val (title, nodes) = extractTitle nodes
+          let val nodes = nonTextNodes nodes
           in
-              let val (header, nodes) = extractHeader nodes
+              let val (title, nodes) = extractTitle nodes
               in
-                  let val (body, nodes) = extractBody nodes
+                  let val (header, nodes) = extractHeader nodes
                   in
-                      let val (footer, nodes) = extractFooter nodes
+                      let val (body, nodes) = extractBody nodes
                       in
-                          Table {
-                              title = title,
-                              header = header,
-                              body = body,
-                              footer = footer
-                          }
+                          let val (footer, nodes) = extractFooter nodes
+                          in
+                              Table {
+                                  title = title,
+                                  header = header,
+                                  body = body,
+                                  footer = footer
+                              }
+                          end
                       end
                   end
               end
