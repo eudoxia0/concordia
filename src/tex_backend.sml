@@ -79,8 +79,10 @@ structure TexBackend :> TEX_BACKEND = struct
     and renderTable title header body footer =
         let val title' =
                 case title of
-                    (x::xs) => SOME (Node ("caption", [], map htmlInline title))
-                  | nil => NONE
+                    (x::xs) => "\\caption{"
+                               ^ concInline title
+                               ^ "}"
+                  | nil => ""
 
             and header' =
                 case body of
@@ -97,11 +99,12 @@ structure TexBackend :> TEX_BACKEND = struct
                     nil => NONE
                   | l => SOME (Node ("tfoot", [], map renderRow l))
         in
-            let val nodes = List.mapPartial (fn x => x) [title', header', body', footer']
-            in
-                "\\begin{tabular}"
-                ^ (String.concatWith "\n" nodes)
-                ^ "\n\\end{tabular}"
+            "\\begin{tabular}\n"
+            ^ title' ^ "\n"
+            ^ header' ^ "\n"
+            ^ body' ^ "\n"
+            ^ footer' ^ "\n"
+            ^ "\\end{tabular}"
             end
         end
 
