@@ -85,14 +85,20 @@ structure TexBackend :> TEX_BACKEND = struct
                   | nil => ""
 
             and header' =
-                String.concat (map renderRow header)
+                case header of
+                    nil => ""
+                  | l => ((renderRows l) ^ "\\hline")
 
             and body' =
-                String.concat (map renderRow body)
+                renderRows body
 
             and footer' =
-                String.concat (map renderRow footer)
+                case header of
+                    nil => ""
+                  | l => ("\\hline" ^ (renderRows l))
 
+            and renderRows l =
+                String.concat (map renderRow l)
         in
             "\\begin{tabular}\n"
             ^ title' ^ "\n"
