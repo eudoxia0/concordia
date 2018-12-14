@@ -185,7 +185,10 @@ structure Transform = struct
     | parseRow _ =
       raise Fail "Bad table row"
 
-  and
+  and parseCell (CST.SList ("cell", _, body)) =
+      TableCell (map parseB body)
+    | parseCell _ =
+      raise Fail "Bad table cell"
 
   and parseTheorem l = case (nonTextNodes l) of
                            [CST.SList ("statement", NONE, s),
