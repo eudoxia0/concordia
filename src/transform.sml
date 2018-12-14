@@ -141,8 +141,8 @@ structure Transform = struct
   and parseTable body =
       let fun extractTitle ((CST.SList ("title", NONE, title))::rest) =
               (map parseI title, rest)
-            | extractTitle _ =
-              (NONE, rest)
+            | extractTitle nodes =
+              (NONE, nodes)
       in
           raise Fail ""
       end
