@@ -126,12 +126,15 @@ structure Transform = struct
 
     | parseB (CST.SList (n, _, _)) = raise TransformFailure (n ^ ": Not implemented yet")
     | parseB _ = raise TransformFailure "Bad text or tex node"
+
   and parseListItem (CST.SList ("it", NONE, l)) = ListItem (map parseB (nonTextNodes l))
     | parseListItem _ = raise TransformFailure "Bad list item definition"
+
   and parseDefListItems ((CST.SList ("term", NONE, t))::(CST.SList ("def", NONE, d))::rest) =
       (Def (map parseI t, map parseB (nonTextNodes d))) :: (parseDefListItems rest)
     | parseDefListItems nil = nil
     | parseDefListItems _ = raise TransformFailure "Error when parsing definition list"
+
   and parseTheorem l = case (nonTextNodes l) of
                            [CST.SList ("statement", NONE, s),
                             CST.SList ("proof", NONE, p)] => (map parseB (nonTextNodes s),
