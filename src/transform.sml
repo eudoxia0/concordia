@@ -145,17 +145,17 @@ structure Transform = struct
               (NONE, nodes)
 
           and extractHeader ((CST.SList ("header", NONE, header))::rest) =
-              (SOME (map parseRow header), rest)
+              (SOME (parseRows header), rest)
             | extractHeader nodes =
               (NONE, nodes)
 
           and extractBody ((CST.SList ("body", NONE, body))::rest) =
-              (map parseRow body, rest)
+              (parseRows body, rest)
             | extractBody _ =
               raise Fail "Missing table body"
 
           and extractFooter ((CST.SList ("footer", NONE, footer))::rest) =
-              (SOME (map parseRow footer), rest)
+              (SOME (parseRows footer), rest)
             | extractFooter nodes =
               (NONE, nodes)
 
@@ -182,6 +182,9 @@ structure Transform = struct
               end
           end
       end
+
+  and parseRows rows =
+      map parseRow (nonTextNodes rows)
 
   and parseRow (CST.SList ("row", _, cells)) =
       TableRow (map parseCell (nonTextNodes cells))
