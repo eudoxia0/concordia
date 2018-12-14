@@ -90,7 +90,7 @@ structure HtmlBackend : HTML_BACKEND = struct
                   | NONE => NONE
 
             and body' =
-                Node ("tbody", [], map renderRow body)
+                SOME (Node ("tbody", [], map renderRow body))
 
             and footer' =
                 case body of
