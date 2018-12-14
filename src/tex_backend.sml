@@ -65,6 +65,8 @@ structure TexBackend :> TEX_BACKEND = struct
         "\\begin{quotation}" ^ (concBlock l) ^ "\\end{quotation}\n\n"
       | texBlock (TexBlock s) =
         "\\[" ^ s ^ "\\]"
+      | texBlock (Table { title, header, body, footer }) =
+        renderTable title header body footer
       | texBlock (Definition (id, l)) =
         concBlock l
       | texBlock (Theorem (id, s, p)) =
