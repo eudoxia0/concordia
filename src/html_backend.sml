@@ -90,10 +90,10 @@ structure HtmlBackend : HTML_BACKEND = struct
                   | nil => NONE
 
             and body' =
-                []
+                NONE
 
             and footer' =
-                []
+                NONE
         in
             let val nodes = List.filter Option.isSome [title', header', body', footer']
             in
