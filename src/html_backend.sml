@@ -11,13 +11,13 @@ structure HtmlBackend : HTML_BACKEND = struct
       | htmlInline (Italics l) =
         n "em" l
       | htmlInline (Underline l) =
-        Node ("span", [Attr ("class", "underline")], wrap (map htmlInline l))
+        Node ("span", [Attr ("class", "underline")], map htmlInline l)
       | htmlInline (Superscript l) =
         n "sup" l
       | htmlInline (Subscript l) =
         n "sub" l
       | htmlInline (TeX s) =
-        Node ("span", [Attr ("class", "inline-tex")], wrap [String ("$" ^ s ^ "$")])
+        Node ("span", [Attr ("class", "inline-tex")], [String ("$" ^ s ^ "$")])
       | htmlInline (Code s) =
         Node ("code", [], [String s])
       | htmlInline (InternalLink (id, l)) =
@@ -25,13 +25,13 @@ structure HtmlBackend : HTML_BACKEND = struct
               [Attr ("href", "#" ^ id)],
               map htmlInline l)
       | htmlInline (Foreign l) =
-        Node ("span", [Attr ("class", "foreign-text")], wrap (map htmlInline l))
+        Node ("span", [Attr ("class", "foreign-text")], map htmlInline l)
       | htmlInline (New l) =
-        Node ("span", [Attr ("class", "new-word")], wrap (map htmlInline l))
+        Node ("span", [Attr ("class", "new-word")], map htmlInline l)
       | htmlInline _ =
         String "NOT IMPLEMENTED YET"
 
-    and n name body = Node (name, [], wrap (map htmlInline body))
+    and n name body = Node (name, [], map htmlInline body)
 
     fun htmlBlock (Paragraph l) = Node ("p", [], map htmlInline l)
       | htmlBlock (List l) = Node ("ul", [], map listItem l)
