@@ -151,7 +151,7 @@ structure Transform = struct
 
           and extractBody ((CST.SList ("body", NONE, body))::rest) =
               (SOME (map parseB body), rest)
-            | extractHeader _ =
+            | extractBody _ =
               raise Fail "Missing table body"
 
       in
