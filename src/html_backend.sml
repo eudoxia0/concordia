@@ -60,6 +60,8 @@ structure HtmlBackend : HTML_BACKEND = struct
         Node ("blockquote", [], map htmlBlock l)
       | htmlBlock (TexBlock s) =
         Node ("div", [Attr ("class", "block-tex")], [String ("\\(" ^ s ^ "\\)")])
+      | htmlBlock (Table { title, header, body, footer }) =
+        renderTable title header body footer
       | htmlBlock (Definition (id, l)) =
         Node ("div", [Attr ("class", "admonition definition")],
               (admTitle "Definition: ") :: (map htmlBlock l))
