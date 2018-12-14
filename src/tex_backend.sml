@@ -40,11 +40,13 @@ structure TexBackend :> TEX_BACKEND = struct
         "\\textbf{" ^ (concInline l) ^ "}"
     and concInline l = String.concat (map texInline l)
 
-    fun texBlock (Paragraph l) = (concInline l ^ "\n\n")
-      | texBlock (List its) = "\\begin{itemize}\n"
-                              ^ (String.concat (map (fn (ListItem l) => "\\item " ^ (concBlock l) ^ "\n\n")
-                                                    its))
-                              ^ "\\end{itemize}\n\n"
+    fun texBlock (Paragraph l) =
+        (concInline l ^ "\n\n")
+      | texBlock (List its) =
+        "\\begin{itemize}\n"
+        ^ (String.concat (map (fn (ListItem l) => "\\item " ^ (concBlock l) ^ "\n\n")
+                              its))
+        ^ "\\end{itemize}\n\n"
       | texBlock (Enumeration its) = "\\begin{enum}\n"
                                      ^ (String.concat (map (fn (ListItem l) => "\\item " ^ (concBlock l) ^ "\n\n")
                                                            its))
