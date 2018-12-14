@@ -81,11 +81,14 @@ structure Transform = struct
             end
         end
     end
+
   and parseSectionContents l = map parseBlockOrSection (nonTextNodes l)
+
   and parseBlockOrSection (CST.SList ("sec", SOME name, body)) = Left (parseSection name body)
     | parseBlockOrSection (CST.SList ("sec", NONE , _))= raise TransformFailure "Section must have a name"
     | parseBlockOrSection (CST.SList (name, arg, body)) = Right (parseB (CST.SList (name, arg, body)))
     | parseBlockOrSection _ = raise TransformFailure "Text and TeX nodes are invalid section content"
+
   and parseB (CST.SList ("p", NONE, body)) = Paragraph (map parseI body)
 
     | parseB (CST.SList ("li", NONE, l)) = List (map parseListItem (nonTextNodes l))
