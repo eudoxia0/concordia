@@ -109,6 +109,9 @@ structure Transform = struct
     | parseB (CST.SList ("texb", NONE, [CST.TeX s])) = TexBlock s
     | parseB (CST.SList ("texb", _, _)) = raise TransformFailure "Bad TeX block"
 
+    | parseB (CST.SList ("table", _, body)) =
+      parseTable body
+
     | parseB (CST.SList ("definition", SOME id, l)) = Definition (id, map parseB (nonTextNodes l))
     | parseB (CST.SList ("definition", NONE, l)) = raise TransformFailure "Definitions must have an ID"
 
