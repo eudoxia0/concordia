@@ -105,7 +105,6 @@ structure TexBackend :> TEX_BACKEND = struct
             ^ body' ^ "\n"
             ^ footer' ^ "\n"
             ^ "\\end{tabular}"
-            end
         end
 
     and renderRow (TableRow cells) =
