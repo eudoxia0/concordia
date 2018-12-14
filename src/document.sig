@@ -8,10 +8,10 @@ signature DOCUMENT = sig
                         | Quote of block_node list
                         | TexBlock of string
                         | Table of {
-                            title : inline_node list,
-                            header : row list,
+                            title : (inline_node list) option,
+                            header : (row list) option,
                             body : row list,
-                            footer : row list
+                            footer : (row list) option
                         }
                         | Definition of string * block_node list
                         | Theorem of string * block_node list * block_node list
