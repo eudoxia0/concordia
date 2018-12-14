@@ -82,18 +82,19 @@ structure HtmlBackend : HTML_BACKEND = struct
 
     and id' s = Attr ("id", s)
 
-    and metaTheorem class id s p = let val s = map htmlBlock s
-                                       and p = map htmlBlock p
-                                   in
-                                       let val sh = admTitle "Statement:"
-                                           and ph = admTitle "Proof:"
-                                       in
-                                           Node ("div", [id' id, cls ("admonition " ^ class)], [
-                                                     Node ("div", [cls "statement"], sh :: s),
-                                                     Node ("div", [cls "proof"], ph :: p)
-                                                ])
-                                       end
-                                   end
+    and metaTheorem class id s p =
+        let val s = map htmlBlock s
+            and p = map htmlBlock p
+        in
+            let val sh = admTitle "Statement:"
+                and ph = admTitle "Proof:"
+            in
+                Node ("div", [id' id, cls ("admonition " ^ class)], [
+                          Node ("div", [cls "statement"], sh :: s),
+                          Node ("div", [cls "proof"], ph :: p)
+                     ])
+            end
+        end
 
     fun heading depth = if depth < 7 then
                             ("h" ^ (Int.toString depth))
