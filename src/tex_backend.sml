@@ -104,10 +104,10 @@ structure TexBackend :> TEX_BACKEND = struct
         end
 
     and renderRow (TableRow cells) =
-        (concBlock cells) ^ "\\\\\n"
+        (String.concatWith " & " (map renderCell cells)) ^ "\\\\\n"
 
     and renderCell (TableCell l) =
-        Node ("td", [], map htmlBlock l)
+        concBlock lNode ("td", [], map htmlBlock l)
 
     fun sectionTag 1 = "\\part"
       | sectionTag 2 = "\\chapter"
