@@ -168,7 +168,12 @@ structure Transform = struct
                   in
                       let val (footer, nodes) = extractFooter nodes
                       in
-                          raise Fail ""
+                          Table {
+                              title = title,
+                              header = header,
+                              body = body,
+                              footer = footer
+                          }
                       end
                   end
               end
