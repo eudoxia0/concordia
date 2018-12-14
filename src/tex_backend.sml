@@ -99,7 +99,9 @@ structure TexBackend :> TEX_BACKEND = struct
         in
             let val nodes = List.mapPartial (fn x => x) [title', header', body', footer']
             in
-                Node ("table", [], nodes)
+                "\\begin{tabular}"
+                ^ (String.concatWith "\n" nodes)
+                ^ "\n\\end{tabular}"
             end
         end
 
