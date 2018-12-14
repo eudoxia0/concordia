@@ -91,7 +91,7 @@ structure TexBackend :> TEX_BACKEND = struct
                 String.concat (map renderRow body)
 
             and footer' =
-                String.concat (map renderRow footer')
+                String.concat (map renderRow footer)
 
         in
             "\\begin{tabular}\n"
