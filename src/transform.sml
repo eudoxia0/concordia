@@ -160,7 +160,10 @@ structure Transform = struct
               (NONE, nodes)
 
       in
-          raise Fail ""
+          let val (title, body) = extractTitle body
+          in
+              raise Fail ""
+          end
       end
 
   and parseTheorem l = case (nonTextNodes l) of
