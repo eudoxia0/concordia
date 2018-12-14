@@ -2,10 +2,14 @@ structure HtmlBackend : HTML_BACKEND = struct
     open Document
     open HtmlGen
 
+    fun escapeHtml s =
+        (* TODO: implement this lel *)
+        s
+
     fun htmlInline (Whitespace) =
         String " "
       | htmlInline (Text s) =
-        String s
+        String (escapeHtml s)
       | htmlInline (Bold l) =
         n "strong" l
       | htmlInline (Italics l) =
