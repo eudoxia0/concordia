@@ -11,13 +11,17 @@ structure HtmlBackend : HTML_BACKEND = struct
       | htmlInline (Italics l) =
         n "em" l
       | htmlInline (Underline l) =
-        Node ("span", [Attr ("class", "underline")], map htmlInline l)
+        Node ("span",
+              [Attr ("class", "underline")],
+              map htmlInline l)
       | htmlInline (Superscript l) =
         n "sup" l
       | htmlInline (Subscript l) =
         n "sub" l
       | htmlInline (TeX s) =
-        Node ("span", [Attr ("class", "inline-tex")], [String ("$" ^ s ^ "$")])
+        Node ("span",
+              [Attr ("class", "inline-tex")],
+              [String ("$" ^ s ^ "$")])
       | htmlInline (Code s) =
         Node ("code", [], [String s])
       | htmlInline (WebLink (uri, l)) =
