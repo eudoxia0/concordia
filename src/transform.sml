@@ -138,7 +138,7 @@ structure Transform = struct
     | parseDefListItems nil = nil
     | parseDefListItems _ = raise TransformFailure "Error when parsing definition list"
 
-  and parseTable body =
+  and parseTable nodes =
       let fun extractTitle ((CST.SList ("title", NONE, title))::rest) =
               (SOME (map parseI title), rest)
             | extractTitle nodes =
@@ -160,9 +160,15 @@ structure Transform = struct
               (NONE, nodes)
 
       in
-          let val (title, body) = extractTitle body
+          let val (title, nodes) = extractTitle nodes
           in
-              raise Fail ""
+              let val (header, nodes) = extractHeader nodes
+              in
+                  let val (body, nodes) = extractBody nodes
+                  in
+                      raise Fail ""
+                  end
+              end
           end
       end
 
