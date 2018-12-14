@@ -81,8 +81,8 @@ structure HtmlBackend : HTML_BACKEND = struct
     and renderTable title header body footer =
         let val title' =
                 case title of
-                    (x::xs) => SOME (Node ("caption", [], map htmlInline title))
-                  | nil => NONE
+                    nil => NONE
+                  | l => SOME (Node ("caption", [], map htmlInline l))
 
             and header' =
                 case body of
