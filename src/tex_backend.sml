@@ -77,35 +77,36 @@ structure TexBackend :> TEX_BACKEND = struct
     and concBlock l = String.concat (map texBlock l)
 
     and renderTable title header body footer =
-        let val title' =
-                case title of
-                    (x::xs) => "\\caption{"
-                               ^ concInline title
-                               ^ "}"
-                  | nil => ""
-
-            and header' =
-                case header of
-                    nil => ""
-                  | l => ((renderRows l) ^ "\\hline")
-
-            and body' =
-                renderRows body
-
-            and footer' =
-                case header of
-                    nil => ""
-                  | l => ("\\hline" ^ (renderRows l))
-
-            and renderRows l =
+        let fun renderRows l =
                 String.concat (map renderRow l)
         in
-            "\\begin{tabular}\n"
-            ^ title' ^ "\n"
-            ^ header' ^ "\n"
-            ^ body' ^ "\n"
-            ^ footer' ^ "\n"
-            ^ "\\end{tabular}"
+            let val title' =
+                    case title of
+                        (x::xs) => "\\caption{"
+                                   ^ concInline title
+                                   ^ "}"
+                      | nil => ""
+
+                and header' =
+                    case header of
+                        nil => ""
+                      | l => ((renderRows l) ^ "\\hline")
+
+                and body' =
+                    renderRows body
+
+                and footer' =
+                    case header of
+                        nil => ""
+                      | l => ("\\hline" ^ (renderRows l))
+            in
+                "\\begin{tabular}\n"
+                ^ title' ^ "\n"
+                ^ header' ^ "\n"
+                ^ body' ^ "\n"
+                ^ footer' ^ "\n"
+                ^ "\\end{tabular}"
+            end
         end
 
     and renderRow (TableRow cells) =
