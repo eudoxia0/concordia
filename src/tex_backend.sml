@@ -47,10 +47,11 @@ structure TexBackend :> TEX_BACKEND = struct
         ^ (String.concat (map (fn (ListItem l) => "\\item " ^ (concBlock l) ^ "\n\n")
                               its))
         ^ "\\end{itemize}\n\n"
-      | texBlock (Enumeration its) = "\\begin{enum}\n"
-                                     ^ (String.concat (map (fn (ListItem l) => "\\item " ^ (concBlock l) ^ "\n\n")
-                                                           its))
-                                     ^ "\\end{enum}\n\n"
+      | texBlock (Enumeration its) =
+        "\\begin{enum}\n"
+        ^ (String.concat (map (fn (ListItem l) => "\\item " ^ (concBlock l) ^ "\n\n")
+                              its))
+        ^ "\\end{enum}\n\n"
       | texBlock (DefList defs) = "\\begin{description}\n"
                                   ^ (String.concat (map (fn (Def (t, d)) => "\\item [" ^ (concInline t) ^ "] " ^ (concBlock d) ^ "\n\n")
                                                         defs))
