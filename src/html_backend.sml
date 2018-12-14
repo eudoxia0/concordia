@@ -147,6 +147,7 @@ structure HtmlBackend : HTML_BACKEND = struct
 
     fun htmlDocument doc cssFiles jsFiles macros =
         htmlDocument' doc (tableOfContents doc) cssFiles jsFiles macros
+
     and htmlDocument' (Document (meta, secs)) toc cssFiles jsFiles macros =
         let val js = map (fn s => Node ("script", [Attr ("src", s)], [])) jsFiles
             and mathjax = Node ("script", [], [String (TexMacros.mathJaxConfig macros)])
