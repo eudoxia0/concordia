@@ -85,17 +85,19 @@ structure HtmlBackend : HTML_BACKEND = struct
                   | nil => NONE
 
             and header' =
-                case header of
-                    (x::xs) => SOME (Node ("thead", [], map renderRow header))
-                  | nil => NONE
+                case body of
+                    nil => NONE
+                  | l => SOME (Node ("thead", [], map renderRow l))
 
             and body' =
-                NONE
+                case body of
+                    nil => NONE
+                  | l => SOME (Node ("tbody", [], map renderRow l))
 
             and footer' =
                 NONE
         in
-            let val nodes = List.filter Option.isSome [title', header', body', footer']
+            let val nodes = List.mapPartial (fn x => x) [title', header', body', footer']
             in
                 Node ("table", [], nodes)
             end
