@@ -82,7 +82,7 @@ structure HtmlBackend : HTML_BACKEND = struct
         let val s = map htmlBlock s
             and p = map htmlBlock p
         in
-            let fun and admTitle s = Node ("span", [cls "admonition-title"], [String s])
+            let fun admTitle s = Node ("span", [cls "admonition-title"], [String s])
                 and cls n = Attr ("class", n)
                 and id' s = Attr ("id", s)
             in
