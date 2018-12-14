@@ -95,7 +95,9 @@ structure HtmlBackend : HTML_BACKEND = struct
                   | l => SOME (Node ("tbody", [], map renderRow l))
 
             and footer' =
-                NONE
+                case body of
+                    nil => NONE
+                  | l => SOME (Node ("tfoot", [], map renderRow l))
         in
             let val nodes = List.mapPartial (fn x => x) [title', header', body', footer']
             in
