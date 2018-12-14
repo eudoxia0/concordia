@@ -95,7 +95,7 @@ structure HtmlBackend : HTML_BACKEND = struct
             and footer' =
                 []
         in
-            let val nodes = filter Option.isSome [title', header', body', footer']
+            let val nodes = List.filter Option.isSome [title', header', body', footer']
             in
                 Node ("table", [], nodes)
             end
