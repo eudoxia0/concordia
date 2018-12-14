@@ -81,23 +81,23 @@ structure HtmlBackend : HTML_BACKEND = struct
     and renderTable title header body footer =
         let val title' =
                 case title of
-                    nil => NONE
-                  | l => SOME (Node ("caption", [], map htmlInline l))
+                    SOME l => SOME (Node ("caption", [], map htmlInline l))
+                  | NONE => NONE
 
             and header' =
                 case body of
-                    nil => NONE
-                  | l => SOME (Node ("thead", [], map renderRow l))
+                    SOME l => SOME (Node ("thead", [], map renderRow l))
+                  | NONE => NONE
 
             and body' =
                 case body of
-                    nil => NONE
-                  | l => SOME (Node ("tbody", [], map renderRow l))
+                    SOME l => SOME (Node ("tbody", [], map renderRow l))
+                  | NONE => NONE
 
             and footer' =
                 case body of
-                    nil => NONE
-                  | l => SOME (Node ("tfoot", [], map renderRow l))
+                    SOME l => SOME (Node ("tfoot", [], map renderRow l))
+                  | NONE => NONE
         in
             let val nodes = List.mapPartial (fn x => x) [title', header', body', footer']
             in
