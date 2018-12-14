@@ -189,7 +189,7 @@ structure Transform = struct
       raise Fail "Bad table row"
 
   and parseCell (CST.SList ("cell", _, body)) =
-      TableCell (map parseB body)
+      TableCell (map parseB (nonTextNodes body))
     | parseCell _ =
       raise Fail "Bad table cell"
 
