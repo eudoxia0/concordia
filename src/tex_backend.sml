@@ -85,19 +85,14 @@ structure TexBackend :> TEX_BACKEND = struct
                   | nil => ""
 
             and header' =
-                case body of
-                    nil => NONE
-                  | l => SOME (Node ("thead", [], map renderRow l))
+                String.concat (map renderRow header)
 
             and body' =
-                case body of
-                    nil => NONE
-                  | l => SOME (Node ("tbody", [], map renderRow l))
+                String.concat (map renderRow body)
 
             and footer' =
-                case body of
-                    nil => NONE
-                  | l => SOME (Node ("tfoot", [], map renderRow l))
+                String.concat (map renderRow footer')
+
         in
             "\\begin{tabular}\n"
             ^ title' ^ "\n"
