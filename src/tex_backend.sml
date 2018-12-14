@@ -97,8 +97,8 @@ structure TexBackend :> TEX_BACKEND = struct
 
                 and footer' =
                     case header of
-                        nil => ""
-                      | l => ("\\hline" ^ (renderRows l))
+                        SOME l => ("\\hline" ^ (renderRows l))
+                      | NONE => ""
             in
                 "\\begin{tabular}\n"
                 ^ title' ^ "\n"
