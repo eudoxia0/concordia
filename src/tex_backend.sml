@@ -76,6 +76,39 @@ structure TexBackend :> TEX_BACKEND = struct
 
     and concBlock l = String.concat (map texBlock l)
 
+    and renderTable title header body footer =
+        let val title' =
+                case title of
+                    (x::xs) => SOME (Node ("caption", [], map htmlInline title))
+                  | nil => NONE
+
+            and header' =
+                case body of
+                    nil => NONE
+                  | l => SOME (Node ("thead", [], map renderRow l))
+
+            and body' =
+                case body of
+                    nil => NONE
+                  | l => SOME (Node ("tbody", [], map renderRow l))
+
+            and footer' =
+                case body of
+                    nil => NONE
+                  | l => SOME (Node ("tfoot", [], map renderRow l))
+        in
+            let val nodes = List.mapPartial (fn x => x) [title', header', body', footer']
+            in
+                Node ("table", [], nodes)
+            end
+        end
+
+    and renderRow (TableRow cells) =
+        (concBlock cells) ^ "\\\\\n"
+
+    and renderCell (TableCell l) =
+        Node ("td", [], map htmlBlock l)
+
     fun sectionTag 1 = "\\part"
       | sectionTag 2 = "\\chapter"
       | sectionTag 3 = "\\section"
