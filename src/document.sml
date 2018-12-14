@@ -18,6 +18,11 @@ structure Document : DOCUMENT = struct
                         | Lemma of string * block_node list * block_node list
 
          and list_item = ListItem of block_node list
+
+         and row = TableRow of cell list
+
+         and cell = TableCell of block_node list
+
          and section = Section of string * inline_node list * block_node list * section list
 
          and inline_node = Whitespace
