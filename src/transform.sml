@@ -182,6 +182,10 @@ structure Transform = struct
 
   and parseRow (CST.SList ("row", _, cells)) =
       TableRow (map parseCell cells)
+    | parseRow _ =
+      raise Fail "Bad table row"
+
+  and
 
   and parseTheorem l = case (nonTextNodes l) of
                            [CST.SList ("statement", NONE, s),
