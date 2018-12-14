@@ -166,7 +166,10 @@ structure Transform = struct
               in
                   let val (body, nodes) = extractBody nodes
                   in
-                      raise Fail ""
+                      let val (footer, nodes) = extractFooter nodes
+                      in
+                          raise Fail ""
+                      end
                   end
               end
           end
