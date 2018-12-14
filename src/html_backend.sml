@@ -130,11 +130,12 @@ structure HtmlBackend : HTML_BACKEND = struct
             title :: charset :: css
         end
 
-    fun htmlHeader title = Node ("header", [], [
-                                     Node ("h1",
-                                           [Attr ("class", "title")],
-                                           [String title])
-                                ])
+    fun htmlHeader title =
+        Node ("header", [], [
+                  Node ("h1",
+                        [Attr ("class", "title")],
+                        [String title])
+             ])
 
     fun htmlBody (Metadata (title, _)) secs toc =
         let val header = htmlHeader title
