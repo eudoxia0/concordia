@@ -43,25 +43,45 @@ structure HtmlBackend : HTML_BACKEND = struct
 
     and n name body = Node (name, [], map htmlInline body)
 
-    fun htmlBlock (Paragraph l) = Node ("p", [], map htmlInline l)
-      | htmlBlock (List l) = Node ("ul", [], map listItem l)
-      | htmlBlock (Enumeration l) = Node ("ol", [], map listItem l)
-      | htmlBlock (DefList l) = Node ("dl", [], List.foldr (op @) [] (map defBody l))
-      | htmlBlock (Image uri) = Node ("img", [Attr ("src", uri)], [])
-      | htmlBlock (CodeBlock s) = Node ("pre", [], [Node ("code", [], [String s])])
-      | htmlBlock (Quote l) = Node ("blockquote", [], map htmlBlock l)
-      | htmlBlock (TexBlock s) = Node ("div", [Attr ("class", "block-tex")], [String ("\\(" ^ s ^ "\\)")])
-      | htmlBlock (Definition (id, l)) = Node ("div", [Attr ("class", "admonition definition")],
-                                               (admTitle "Definition: ") :: (map htmlBlock l))
-      | htmlBlock (Theorem (id, s, p)) = metaTheorem "theorem" id s p
-      | htmlBlock (Lemma (id, s, p)) = metaTheorem "lemma" id s p
+    fun htmlBlock (Paragraph l) =
+        Node ("p", [], map htmlInline l)
+      | htmlBlock (List l) =
+        Node ("ul", [], map listItem l)
+      | htmlBlock (Enumeration l) =
+        Node ("ol", [], map listItem l)
+      | htmlBlock (DefList l) =
+        Node ("dl", [], List.foldr (op @) [] (map defBody l))
+      | htmlBlock (Image uri) =
+        Node ("img", [Attr ("src", uri)], [])
+      | htmlBlock (CodeBlock s) =
+        Node ("pre", [], [
+                  Node ("code", [], [String s])])
+      | htmlBlock (Quote l) =
+        Node ("blockquote", [], map htmlBlock l)
+      | htmlBlock (TexBlock s) =
+        Node ("div", [Attr ("class", "block-tex")], [String ("\\(" ^ s ^ "\\)")])
+      | htmlBlock (Definition (id, l)) =
+        Node ("div", [Attr ("class", "admonition definition")],
+              (admTitle "Definition: ") :: (map htmlBlock l))
+      | htmlBlock (Theorem (id, s, p)) =
+        metaTheorem "theorem" id s p
+      | htmlBlock (Lemma (id, s, p)) =
+        metaTheorem "lemma" id s p
+
     and listItem (ListItem l) = Node ("li", [], map htmlBlock l)
+
     and defBody (Def (t, d)) = [termBody t, defBody' d]
+
     and termBody l = Node ("dt", [], map htmlInline l)
+
     and defBody' l = Node ("dd", [], map htmlBlock l)
+
     and admTitle s = Node ("span", [cls "admonition-title"], [String s])
+
     and cls n = Attr ("class", n)
+
     and id' s = Attr ("id", s)
+
     and metaTheorem class id s p = let val s = map htmlBlock s
                                        and p = map htmlBlock p
                                    in
