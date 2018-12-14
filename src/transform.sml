@@ -143,6 +143,12 @@ structure Transform = struct
               (SOME (map parseI title), rest)
             | extractTitle nodes =
               (NONE, nodes)
+
+          and extractHeader ((CST.SList ("header", NONE, header))::rest) =
+              (SOME (map parseB header), rest)
+            | extractHeader nodes =
+              (NONE, nodes)
+
       in
           raise Fail ""
       end
