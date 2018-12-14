@@ -82,15 +82,15 @@ structure TexBackend :> TEX_BACKEND = struct
         in
             let val title' =
                     case title of
-                        (x::xs) => "\\caption{"
-                                   ^ concInline title
-                                   ^ "}"
-                      | nil => ""
+                        SOME title => "\\caption{"
+                                      ^ concInline title
+                                      ^ "}"
+                      | NONE => ""
 
                 and header' =
                     case header of
-                        nil => ""
-                      | l => ((renderRows l) ^ "\\hline")
+                        SOME l => ((renderRows l) ^ "\\hline")
+                      | NONE => ""
 
                 and body' =
                     renderRows body
