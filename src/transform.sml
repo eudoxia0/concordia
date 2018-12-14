@@ -149,6 +149,11 @@ structure Transform = struct
             | extractHeader nodes =
               (NONE, nodes)
 
+          and extractBody ((CST.SList ("body", NONE, body))::rest) =
+              (SOME (map parseB body), rest)
+            | extractHeader _ =
+              raise Fail "Missing table body"
+
       in
           raise Fail ""
       end
