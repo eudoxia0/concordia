@@ -80,9 +80,9 @@ structure HtmlBackend : HTML_BACKEND = struct
 
     and admTitle s = Node ("span", [cls "admonition-title"], [String s])
 
-    and cls n = Attr ("class", n)
+    and classAttr n = Attr ("class", n)
 
-    and id' s = Attr ("id", s)
+    and idAttr s = Attr ("id", s)
 
     and metaTheorem class id s p =
         let val s = map htmlBlock s
