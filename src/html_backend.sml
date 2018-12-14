@@ -28,8 +28,6 @@ structure HtmlBackend : HTML_BACKEND = struct
         Node ("span", [Attr ("class", "foreign-text")], map htmlInline l)
       | htmlInline (New l) =
         Node ("span", [Attr ("class", "new-word")], map htmlInline l)
-      | htmlInline _ =
-        String "NOT IMPLEMENTED YET"
 
     and n name body = Node (name, [], map htmlInline body)
 
