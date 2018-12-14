@@ -78,23 +78,22 @@ structure HtmlBackend : HTML_BACKEND = struct
 
     and defBody' l = Node ("dd", [], map htmlBlock l)
 
-    and admTitle s = Node ("span", [cls "admonition-title"], [String s])
-
-    and classAttr n = Attr ("class", n)
-
-    and idAttr s = Attr ("id", s)
-
     and metaTheorem class id s p =
         let val s = map htmlBlock s
             and p = map htmlBlock p
         in
-            let val sh = admTitle "Statement:"
-                and ph = admTitle "Proof:"
+            let fun and admTitle s = Node ("span", [cls "admonition-title"], [String s])
+                and cls n = Attr ("class", n)
+                and id' s = Attr ("id", s)
             in
-                Node ("div", [id' id, cls ("admonition " ^ class)], [
-                          Node ("div", [cls "statement"], sh :: s),
-                          Node ("div", [cls "proof"], ph :: p)
-                     ])
+                let val sh = admTitle "Statement:"
+                    and ph = admTitle "Proof:"
+                in
+                    Node ("div", [id' id, cls ("admonition " ^ class)], [
+                              Node ("div", [cls "statement"], sh :: s),
+                              Node ("div", [cls "proof"], ph :: p)
+                         ])
+                end
             end
         end
 
