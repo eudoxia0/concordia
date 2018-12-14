@@ -79,7 +79,16 @@ structure HtmlBackend : HTML_BACKEND = struct
     and defBody' l = Node ("dd", [], map htmlBlock l)
 
     and renderTable title header body footer =
-        raise Fail "Not done yet"
+        let val title' =
+                case title of
+                    (x::xs) => [Node ("caption", [], map htmlInline title)]
+                  | nil => []
+        in
+            let val nodes = title'
+            in
+                Node ("table", [], nodes)
+            end
+        end
 
     and admTitle s = Node ("span", [cls "admonition-title"], [String s])
 
