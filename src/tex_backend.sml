@@ -106,7 +106,7 @@ structure TexBackend :> TEX_BACKEND = struct
         (String.concatWith " & " (map renderCell cells)) ^ "\\\\\n"
 
     and renderCell (TableCell l) =
-        concBlock lNode ("td", [], map htmlBlock l)
+        concBlock l
 
     fun sectionTag 1 = "\\part"
       | sectionTag 2 = "\\chapter"
