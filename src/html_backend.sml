@@ -96,10 +96,11 @@ structure HtmlBackend : HTML_BACKEND = struct
             end
         end
 
-    fun heading depth = if depth < 7 then
-                            ("h" ^ (Int.toString depth))
-                        else
-                            "h6"
+    fun heading depth =
+        if depth < 7 then
+            ("h" ^ (Int.toString depth))
+        else
+            "h6"
 
     fun htmlSection (Section (id, title, contents, subsecs)) depth =
         Node ("section", [Attr ("id", id)],
