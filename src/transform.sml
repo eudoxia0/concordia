@@ -150,7 +150,7 @@ structure Transform = struct
               (NONE, nodes)
 
           and extractBody ((CST.SList ("body", NONE, body))::rest) =
-              (SOME (map parseB body), rest)
+              (map parseRow body, rest)
             | extractBody _ =
               raise Fail "Missing table body"
 
@@ -179,6 +179,9 @@ structure Transform = struct
               end
           end
       end
+
+  and parseRow (CST.SList ("row", _, cells)) =
+      TableRow (map parseCell cells)
 
   and parseTheorem l = case (nonTextNodes l) of
                            [CST.SList ("statement", NONE, s),
