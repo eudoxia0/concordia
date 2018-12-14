@@ -12,19 +12,32 @@ structure TexBackend :> TEX_BACKEND = struct
       | mapChar #"#" = "\\#"
       | mapChar c = str c
 
-    fun texInline Whitespace = ""
-      | texInline (Text s) = escapeText s
-      | texInline (Bold l) = "\\textbf{" ^ (concInline l) ^ "}"
-      | texInline (Italics l) = "\\textit{" ^ (concInline l) ^ "}"
-      | texInline (Underline l) = "\\underline{" ^ (concInline l) ^ "}"
-      | texInline (Superscript l) = "\\textsuperscript" ^ (concInline l) ^ "}"
-      | texInline (Subscript l) = "\\textsubscript" ^ (concInline l) ^ "}"
-      | texInline (TeX s) = "$" ^ s ^ "$"
-      | texInline (Code s) = "\\texttt{" ^ (escapeText s) ^ "}"
-      | texInline (WebLink (url, l)) = "\\href{" ^ url ^ "}{" ^ (concInline l) ^ "}"
-      | texInline (InternalLink (id, l)) = "\\hyperref[" ^ id ^ "]{" ^ (concInline l) ^ "}"
-      | texInline (Foreign l) = "\\emph{" ^ (concInline l) ^ "}"
-      | texInline (New l) = "\\textbf{" ^ (concInline l) ^ "}"
+    fun texInline Whitespace =
+        ""
+      | texInline (Text s) =
+        escapeText s
+      | texInline (Bold l) =
+        "\\textbf{" ^ (concInline l) ^ "}"
+      | texInline (Italics l) =
+        "\\textit{" ^ (concInline l) ^ "}"
+      | texInline (Underline l) =
+        "\\underline{" ^ (concInline l) ^ "}"
+      | texInline (Superscript l) =
+        "\\textsuperscript" ^ (concInline l) ^ "}"
+      | texInline (Subscript l) =
+        "\\textsubscript" ^ (concInline l) ^ "}"
+      | texInline (TeX s) =
+        "$" ^ s ^ "$"
+      | texInline (Code s) =
+        "\\texttt{" ^ (escapeText s) ^ "}"
+      | texInline (WebLink (url, l)) =
+        "\\href{" ^ url ^ "}{" ^ (concInline l) ^ "}"
+      | texInline (InternalLink (id, l)) =
+        "\\hyperref[" ^ id ^ "]{" ^ (concInline l) ^ "}"
+      | texInline (Foreign l) =
+        "\\emph{" ^ (concInline l) ^ "}"
+      | texInline (New l) =
+        "\\textbf{" ^ (concInline l) ^ "}"
     and concInline l = String.concat (map texInline l)
 
     fun texBlock (Paragraph l) = (concInline l ^ "\n\n")
