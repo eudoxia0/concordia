@@ -144,7 +144,7 @@ structure Transform = struct
             | extractTitle _ =
               (NONE, rest)
       in
-
+          raise Fail ""
       end
 
   and parseTheorem l = case (nonTextNodes l) of
