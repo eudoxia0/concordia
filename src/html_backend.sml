@@ -85,7 +85,7 @@ structure HtmlBackend : HTML_BACKEND = struct
                   | NONE => NONE
 
             and header' =
-                case body of
+                case header of
                     SOME l => SOME (Node ("thead", [], map renderRow l))
                   | NONE => NONE
 
