@@ -52,10 +52,11 @@ structure TexBackend :> TEX_BACKEND = struct
         ^ (String.concat (map (fn (ListItem l) => "\\item " ^ (concBlock l) ^ "\n\n")
                               its))
         ^ "\\end{enum}\n\n"
-      | texBlock (DefList defs) = "\\begin{description}\n"
-                                  ^ (String.concat (map (fn (Def (t, d)) => "\\item [" ^ (concInline t) ^ "] " ^ (concBlock d) ^ "\n\n")
-                                                        defs))
-                                  ^ "\\end{description}\n\n"
+      | texBlock (DefList defs) =
+        "\\begin{description}\n"
+        ^ (String.concat (map (fn (Def (t, d)) => "\\item [" ^ (concInline t) ^ "] " ^ (concBlock d) ^ "\n\n")
+                              defs))
+        ^ "\\end{description}\n\n"
       | texBlock (Image path) = "\\includegraphics{" ^ path ^ "}\n\n"
       | texBlock (CodeBlock s) = "\\begin{verbatim}" ^ s ^ "\\end{verbatim}\n\n"
       | texBlock (Quote l) = "\\begin{quotation}" ^ (concBlock l) ^ "\\end{quotation}\n\n"
