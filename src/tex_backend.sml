@@ -73,6 +73,7 @@ structure TexBackend :> TEX_BACKEND = struct
         concBlock s
       | texBlock (Lemma (id, s, p)) =
         concBlock s
+
     and concBlock l = String.concat (map texBlock l)
 
     fun sectionTag 1 = "\\part"
