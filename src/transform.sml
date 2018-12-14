@@ -154,6 +154,11 @@ structure Transform = struct
             | extractBody _ =
               raise Fail "Missing table body"
 
+          and extractFooter ((CST.SList ("footer", NONE, footer))::rest) =
+              (SOME (map parseB footer), rest)
+            | extractFooter nodes =
+              (NONE, nodes)
+
       in
           raise Fail ""
       end
