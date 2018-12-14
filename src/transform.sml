@@ -138,6 +138,15 @@ structure Transform = struct
     | parseDefListItems nil = nil
     | parseDefListItems _ = raise TransformFailure "Error when parsing definition list"
 
+  and parseTable body =
+      let fun extractTitle ((CST.SList "title", NONE, title)::rest) =
+              SOME (map parseI title)
+            | extractTitle _ =
+              NONE
+      in
+
+      end
+
   and parseTheorem l = case (nonTextNodes l) of
                            [CST.SList ("statement", NONE, s),
                             CST.SList ("proof", NONE, p)] => (map parseB (nonTextNodes s),
