@@ -2,22 +2,37 @@ structure HtmlBackend : HTML_BACKEND = struct
     open Document
     open HtmlGen
 
-    fun htmlInline (Whitespace) = String " "
-      | htmlInline (Text s) = String s
-      | htmlInline (Bold l) = n "strong" l
-      | htmlInline (Italics l) = n "em" l
-      | htmlInline (Underline l) = Node ("span", [Attr ("class", "underline")], wrap (map htmlInline l))
-      | htmlInline (Superscript l) = n "sup" l
-      | htmlInline (Subscript l) = n "sub" l
-      | htmlInline (TeX s) = Node ("span", [Attr ("class", "inline-tex")], wrap [String ("$" ^ s ^ "$")])
-      | htmlInline (Code s) = Node ("code", [], [String s])
-      | htmlInline (InternalLink (id, l)) = Node ("a",
-                                                  [Attr ("href", "#" ^ id)],
-                                                  map htmlInline l)
-      | htmlInline (Foreign l) = Node ("span", [Attr ("class", "foreign-text")], wrap (map htmlInline l))
-      | htmlInline (New l) = Node ("span", [Attr ("class", "new-word")], wrap (map htmlInline l))
-      | htmlInline _ = String "NOT IMPLEMENTED YET"
+    fun htmlInline (Whitespace) =
+        String " "
+      | htmlInline (Text s) =
+        String s
+      | htmlInline (Bold l) =
+        n "strong" l
+      | htmlInline (Italics l) =
+        n "em" l
+      | htmlInline (Underline l) =
+        Node ("span", [Attr ("class", "underline")], wrap (map htmlInline l))
+      | htmlInline (Superscript l) =
+        n "sup" l
+      | htmlInline (Subscript l) =
+        n "sub" l
+      | htmlInline (TeX s) =
+        Node ("span", [Attr ("class", "inline-tex")], wrap [String ("$" ^ s ^ "$")])
+      | htmlInline (Code s) =
+        Node ("code", [], [String s])
+      | htmlInline (InternalLink (id, l)) =
+        Node ("a",
+              [Attr ("href", "#" ^ id)],
+              map htmlInline l)
+      | htmlInline (Foreign l) =
+        Node ("span", [Attr ("class", "foreign-text")], wrap (map htmlInline l))
+      | htmlInline (New l) =
+        Node ("span", [Attr ("class", "new-word")], wrap (map htmlInline l))
+      | htmlInline _ =
+        String "NOT IMPLEMENTED YET"
+
     and n name body = Node (name, [], wrap (map htmlInline body))
+
     and wrap l = l
 
     fun htmlBlock (Paragraph l) = Node ("p", [], map htmlInline l)
