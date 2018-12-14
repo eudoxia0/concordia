@@ -20,6 +20,10 @@ structure HtmlBackend : HTML_BACKEND = struct
         Node ("span", [Attr ("class", "inline-tex")], [String ("$" ^ s ^ "$")])
       | htmlInline (Code s) =
         Node ("code", [], [String s])
+      | htmlInline (WebLink (uri, l)) =
+        Node ("a",
+              [Attr ("href", uri)],
+              map htmlInline l)
       | htmlInline (InternalLink (id, l)) =
         Node ("a",
               [Attr ("href", "#" ^ id)],
