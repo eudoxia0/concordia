@@ -81,14 +81,31 @@ structure HtmlBackend : HTML_BACKEND = struct
     and renderTable title header body footer =
         let val title' =
                 case title of
-                    (x::xs) => [Node ("caption", [], map htmlInline title)]
-                  | nil => []
+                    (x::xs) => SOME (Node ("caption", [], map htmlInline title))
+                  | nil => NONE
+
+            and header' =
+                case header of
+                    (x::xs) => SOME (Node ("thead", [], map renderRow header))
+                  | nil => NONE
+
+            and body' =
+                []
+
+            and footer' =
+                []
         in
-            let val nodes = title'
+            let val nodes = filter Option.isSome [title', header', body', footer']
             in
                 Node ("table", [], nodes)
             end
         end
+
+    and renderRow (TableRow cells) =
+        Node ("tr", [], map renderCell cells)
+
+    and renderCell (TableCell l) =
+        Node ("td", [], map htmlBlock l)
 
     and admTitle s = Node ("span", [cls "admonition-title"], [String s])
 
