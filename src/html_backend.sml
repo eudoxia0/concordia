@@ -33,8 +33,6 @@ structure HtmlBackend : HTML_BACKEND = struct
 
     and n name body = Node (name, [], wrap (map htmlInline body))
 
-    and wrap l = l
-
     fun htmlBlock (Paragraph l) = Node ("p", [], map htmlInline l)
       | htmlBlock (List l) = Node ("ul", [], map listItem l)
       | htmlBlock (Enumeration l) = Node ("ol", [], map listItem l)
