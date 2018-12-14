@@ -57,13 +57,20 @@ structure TexBackend :> TEX_BACKEND = struct
         ^ (String.concat (map (fn (Def (t, d)) => "\\item [" ^ (concInline t) ^ "] " ^ (concBlock d) ^ "\n\n")
                               defs))
         ^ "\\end{description}\n\n"
-      | texBlock (Image path) = "\\includegraphics{" ^ path ^ "}\n\n"
-      | texBlock (CodeBlock s) = "\\begin{verbatim}" ^ s ^ "\\end{verbatim}\n\n"
-      | texBlock (Quote l) = "\\begin{quotation}" ^ (concBlock l) ^ "\\end{quotation}\n\n"
-      | texBlock (TexBlock s) = "\\[" ^ s ^ "\\]"
-      | texBlock (Definition (id, l)) = concBlock l
-      | texBlock (Theorem (id, s, p)) = concBlock s
-      | texBlock (Lemma (id, s, p)) = concBlock s
+      | texBlock (Image path) =
+        "\\includegraphics{" ^ path ^ "}\n\n"
+      | texBlock (CodeBlock s) =
+        "\\begin{verbatim}" ^ s ^ "\\end{verbatim}\n\n"
+      | texBlock (Quote l) =
+        "\\begin{quotation}" ^ (concBlock l) ^ "\\end{quotation}\n\n"
+      | texBlock (TexBlock s) =
+        "\\[" ^ s ^ "\\]"
+      | texBlock (Definition (id, l)) =
+        concBlock l
+      | texBlock (Theorem (id, s, p)) =
+        concBlock s
+      | texBlock (Lemma (id, s, p)) =
+        concBlock s
     and concBlock l = String.concat (map texBlock l)
 
     fun sectionTag 1 = "\\part"
