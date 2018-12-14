@@ -78,6 +78,9 @@ structure HtmlBackend : HTML_BACKEND = struct
 
     and defBody' l = Node ("dd", [], map htmlBlock l)
 
+    and renderTable title header body footer =
+        raise Fail "Not done yet"
+
     and admTitle s = Node ("span", [cls "admonition-title"], [String s])
 
     and cls n = Attr ("class", n)
