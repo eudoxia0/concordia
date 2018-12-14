@@ -145,7 +145,7 @@ structure Transform = struct
               (NONE, nodes)
 
           and extractHeader ((CST.SList ("header", NONE, header))::rest) =
-              (SOME (map parseB header), rest)
+              (SOME (map parseRow header), rest)
             | extractHeader nodes =
               (NONE, nodes)
 
@@ -155,7 +155,7 @@ structure Transform = struct
               raise Fail "Missing table body"
 
           and extractFooter ((CST.SList ("footer", NONE, footer))::rest) =
-              (SOME (map parseB footer), rest)
+              (SOME (map parseRow footer), rest)
             | extractFooter nodes =
               (NONE, nodes)
 
