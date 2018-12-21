@@ -51,7 +51,7 @@ structure Parser : PARSER = struct
 
   (* Tags *)
 
-  val tagChar = anyOfString "abcdefghijklmnopqrstuvwxyz-0123456789";
+  val tagChar = anyOfString "abcdefghijklmnopqrstuvwxyz_0123456789";
 
   val tagParser = seqR (pchar startChar)
                        (pmap String.implode (many1 tagChar))
