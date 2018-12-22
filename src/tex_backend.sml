@@ -45,8 +45,8 @@ structure TexBackend :> TEX_BACKEND = struct
         "\\textsubscript" ^ (concInline l) ^ "}"
       | texInline (TeX s) =
         "$" ^ s ^ "$"
-      | texInline (Code s) =
-        "\\texttt{" ^ (escapeText s) ^ "}"
+      | texInline (Code l) =
+        "\\texttt{" ^ (concInline l) ^ "}"
       | texInline (WebLink (url, l)) =
         "\\href{" ^ url ^ "}{" ^ (concInline l) ^ "}"
       | texInline (InternalLink (id, l)) =
