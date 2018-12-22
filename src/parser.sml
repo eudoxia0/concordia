@@ -43,7 +43,7 @@ structure Parser : PARSER = struct
 
   val texChar = or (seqR (pchar #"\\") (pchar #"$")) (noneOf [texDelimiter]);
 
-  val texParser = pmap String.implode (between (pchar #"$") (many texChar) (pchar #"$"));
+  val texParser = pmap String.implode (between (pchar texDelimiter) (many texChar) (pchar texDelimiter));
 
   (* Text *)
 
