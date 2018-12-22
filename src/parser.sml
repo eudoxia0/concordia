@@ -27,18 +27,16 @@ structure Parser : PARSER = struct
   val leftDelimiter = #"{"
   val rightDelimiter = #"}"
 
-  (* Utilities *)
-
-  val whitespaceChars = [#" ", #"\n", #"\r"];
-
   (* Utility parsers *)
 
   val singleLineComment = seqR (pchar #"%")
                                (seqR (many (noneOf [#"\n"]))
                                      (pchar #"\n"))
 
-  val whitespaceParser = or (anyOf whitespaceChars)
-                            singleLineComment
+  val whitespaceParser = choice [pchar #" ",
+                                 pchar #"\n",
+                                 pchar #"\r",
+                                 singleLineComment]
 
   val ws = many whitespaceParser;
 
