@@ -43,7 +43,7 @@ fun parseFile path =
     | (Util.Failure msg) => die msg
 
 fun parseDocument path =
-  case Transform.parseDocument (CST.processIncludes (parseFile path)) of
+  case Transform.parseDocument (Macro.processIncludes (parseFile path)) of
       (Result doc) => doc
     | (Failure msg) => die msg
 
