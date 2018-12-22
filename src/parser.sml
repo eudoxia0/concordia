@@ -45,7 +45,8 @@ structure Parser : PARSER = struct
 
   (* Text *)
 
-  val textChar = noneOf [startChar, rightDelimiter, #"$"];
+  val textChar = or (seqR (pchar #"\\") (pchar #"\\"))
+                    (noneOf [startChar, rightDelimiter, #"$"]);
 
   val textParser = pmap String.implode (many1 textChar);
 
