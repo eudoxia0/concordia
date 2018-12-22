@@ -29,9 +29,9 @@ structure Parser : PARSER = struct
 
   (* Comments *)
 
-  val singleLineComment = seqR (pchar #"%")
-                               (seqR (many (noneOf [#"\n"]))
-                                     (pchar #"\n"))
+  val comment = seqR (pchar #"%")
+                     (seqR (many (noneOf [#"\n"]))
+                           (pchar #"\n"))
 
   (* Inline TeX *)
 
@@ -49,14 +49,17 @@ structure Parser : PARSER = struct
 
   val escapeRightBracket = seqR (pchar #"\\") (pchar #"}")
 
-  val textChar = or escapeBackslash
-                    (or escapeLeftBracket
-                        (or escapeRightBracket
-                            (or singleLineComment
-                                (noneOf [startChar,
-                                         leftDelimiter,
-                                         rightDelimiter,
-                                         texDelimiter]))))
+  val escapeComment = seqR (pchar #"\\") (pchar #"%")
+
+  val textChar = choice [escapeBackslash,
+                         escapeLeftBracket,
+                         escapeRightBracket,
+                         escapeComment,
+                         comment,
+                         noneOf [startChar,
+                                 leftDelimiter,
+                                 rightDelimiter,
+                                 texDelimiter]]
 
   val textParser = pmap String.implode (many1 textChar);
 
