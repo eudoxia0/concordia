@@ -50,7 +50,7 @@ structure Document : DOCUMENT = struct
                          | Superscript of inline_node list
                          | Subscript of inline_node list
                          | TeX of string
-                         | Code of string
+                         | Code of inline_node list
                          | WebLink of string * inline_node list
                          | InternalLink of string * inline_node list
                          | Foreign of inline_node list
