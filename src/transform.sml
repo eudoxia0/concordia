@@ -45,7 +45,7 @@ structure Transform = struct
     | parseI (CST.SList ("sub", NONE, body)) = Subscript (map parseI body)
     | parseI (CST.SList ("sub", SOME _, _)) = raise TransformFailure (noArgument "Subscript")
 
-    | parseI (CST.SList ("c", NONE, [CST.Text s])) = Code s
+    | parseI (CST.SList ("c", NONE, body)) = Code (map parseI body)
     | parseI (CST.SList ("c", SOME _, _)) = raise TransformFailure (noArgument "Code")
 
     | parseI (CST.SList ("ref", NONE, _)) = raise TransformFailure "Missing ID in ref"
