@@ -16,6 +16,8 @@
 *)
 
 structure Macro :> MACRO = struct
+  open CST
+
   fun includeFile path =
     Text (Util.readFileToString path)
 
