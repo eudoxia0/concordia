@@ -43,6 +43,8 @@ structure CST : CST = struct
     | processIncludes (SList ("include", _, _)) = raise Fail "Bad \\include"
     | processIncludes (SList ("includelines", SOME arg, [])) = includeLines arg
     | processIncludes (SList ("includelines", _, _)) = raise Fail "Bad \\includelines"
+    | processIncludes (SList ("import", SOME path, _)) = importFile path
+    | processIncludes (SList ("import", NONE, _)) = raise Fail "Bad \\import"
     | processIncludes (SList (n, a, l)) = SList (n, a, map processIncludes l)
     | processIncludes a = a
 end
