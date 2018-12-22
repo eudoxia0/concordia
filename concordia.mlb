@@ -36,6 +36,9 @@ src/cst.sml
 src/parser.sig
 src/parser.sml
 
+src/macro.sig
+src/macro.sml
+
 src/transform.sig
 src/transform.sml
 
