@@ -43,8 +43,8 @@ structure HtmlBackend : HTML_BACKEND = struct
         Node ("span",
               [Attr ("class", "inline-tex")],
               [String ("$" ^ s ^ "$")])
-      | htmlInline (Code s) =
-        Node ("code", [], [String s])
+      | htmlInline (Code l) =
+        n "code" l
       | htmlInline (WebLink (uri, l)) =
         Node ("a",
               [Attr ("href", uri)],
