@@ -39,6 +39,14 @@ structure CST : CST = struct
           SOME i => i
         | NONE => raise Fail ("Bad line number '" ^ s ^ "' for \\includelines")
 
+  fun importFile path =
+      let val text = Util.readFileToString path
+      in
+          case Parser.parseString text of
+              (Util.Result node) => node
+            | (Util.Failure f) => raise Fail ("Error in \\import macro: " ^ f)
+      end
+
   fun processIncludes (SList ("include", SOME path, [])) = includeFile path
     | processIncludes (SList ("include", _, _)) = raise Fail "Bad \\include"
     | processIncludes (SList ("includelines", SOME arg, [])) = includeLines arg
