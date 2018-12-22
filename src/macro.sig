@@ -16,7 +16,5 @@
 *)
 
 signature MACRO = sig
-    type node = CST.node
-
-    val processIncludes : node -> node
+    val processIncludes : CST.node -> CST.node
 end
