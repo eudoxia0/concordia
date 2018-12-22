@@ -33,7 +33,12 @@ structure Parser : PARSER = struct
 
   (* Utility parsers *)
 
-  val whitespaceParser = anyOf whitespaceChars;
+  val singleLineComment = seqR (pchar #"%")
+                               (seqR (many (noneOf [#"\n"]))
+                                     (pchar #"\n"))
+
+  val whitespaceParser = or (anyOf whitespaceChars)
+                            singleLineComment
 
   val ws = many whitespaceParser;
 
