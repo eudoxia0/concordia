@@ -56,7 +56,7 @@ structure Parser : PARSER = struct
   val textChar = or escapeBackslash
                     (or escapeLeftBracket
                         (or escapeRightBracket
-                            (noneOf [startChar, leftDelimiter, rightDelimiter, #"$"])))
+                            (noneOf [startChar, leftDelimiter, rightDelimiter, texDelimiter])))
 
   val textParser = pmap String.implode (many1 textChar);
 
