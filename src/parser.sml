@@ -49,9 +49,11 @@ structure Parser : PARSER = struct
 
   val escapeLeftBracket = seqR (pchar #"\\") (pchar #"{")
 
+  val escapeRightBracket = seqR (pchar #"\\") (pchar #"}")
+
   val textChar = or escapeBackslash
-                    (or (escapeLeftBracket)
-                        (or (seqR (pchar #"\\") (pchar #"}"))
+                    (or escapeLeftBracket
+                        (or escapeRightBracket
                             (noneOf [startChar, leftDelimiter, rightDelimiter, #"$"])))
 
   val textParser = pmap String.implode (many1 textChar);
