@@ -45,7 +45,9 @@ structure Parser : PARSER = struct
 
   (* Text *)
 
-  val textChar = or (seqR (pchar #"\\") (pchar #"\\"))
+  val escapeBackslash = seqR (pchar #"\\") (pchar #"\\")
+
+  val textChar = or escapeBackslash
                     (or (seqR (pchar #"\\") (pchar #"{"))
                         (or (seqR (pchar #"\\") (pchar #"}"))
                             (noneOf [startChar, leftDelimiter, rightDelimiter, #"$"])))
